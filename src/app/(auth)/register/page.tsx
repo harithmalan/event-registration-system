@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Mail, Lock, AlertCircle } from 'lucide-react'
@@ -8,6 +9,7 @@ import { createBrowserClient } from '@/lib/supabase-browser'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 
 export default function RegisterPage() {
+  const router = useRouter()
   const supabase = createBrowserClient()
 
   const [email, setEmail] = useState('')
@@ -28,19 +30,19 @@ export default function RegisterPage() {
         email,
         password,
         options: {
-          // Skip email confirmation — go straight to dashboard
           emailRedirectTo: `${window.location.origin}/auth/callback`,
         },
       })
       if (authError) {
         setError(authError.message)
-      } else {
-        // Redirect immediately — no email confirmation step
-        window.location.href = '/profile-setup'
+        setLoading(false)
+        return
       }
+      
+      // Always go to profile-setup first — student ID required
+      router.push('/profile-setup')
     } catch {
       setError('Something went wrong. Please try again.')
-    } finally {
       setLoading(false)
     }
   }

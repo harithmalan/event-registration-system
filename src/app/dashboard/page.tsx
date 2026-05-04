@@ -63,8 +63,18 @@ export default function DashboardPage() {
       .eq('id', session.user.id)
       .maybeSingle()
 
-    if (!prof) { router.push('/profile-setup'); return }
-    if (!prof.student_number) { router.push('/profile-setup'); return }
+    // No profile row at all
+    if (!prof) {
+      router.push('/profile-setup')
+      return
+    }
+
+    // Profile exists but student_number not filled in yet
+    if (!prof.student_number || prof.student_number.trim() === '') {
+      router.push('/profile-setup')
+      return
+    }
+
     setProfile(prof)
 
     const { data: reg } = await supabase
@@ -203,7 +213,7 @@ if (registration) {
             </div>
             <div>
               <div className="inline-block px-3 py-1 rounded-full text-[0.72rem] font-semibold uppercase tracking-widest mb-2" style={{ background: 'rgba(201,148,58,0.25)', border: '1px solid rgba(201,148,58,0.5)', color: '#E8BC6A' }}>
-                Suurya Mangalya'26
+                Suurya Mangalya&apos;26
               </div>
               <h1 className="font-yatra text-2xl md:text-[2.2rem] leading-tight" style={{ color: '#E8BC6A' }}>
                 Awurudu 2026

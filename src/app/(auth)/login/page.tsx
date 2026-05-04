@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Mail, Lock, AlertCircle } from 'lucide-react'
@@ -8,6 +9,7 @@ import { createBrowserClient } from '@/lib/supabase-browser'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 
 export default function LoginPage() {
+  const router = useRouter()
   const supabase = createBrowserClient()
 
   const [email, setEmail] = useState('')
@@ -24,12 +26,14 @@ export default function LoginPage() {
       const { error: authError } = await supabase.auth.signInWithPassword({ email, password })
       if (authError) {
         setError(authError.message)
-      } else {
-        window.location.href = '/dashboard'
+        setLoading(false)
+        return
       }
+      
+      router.refresh()
+      router.push('/dashboard')
     } catch {
       setError('Something went wrong. Please try again.')
-    } finally {
       setLoading(false)
     }
   }
