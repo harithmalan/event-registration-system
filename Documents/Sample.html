@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Awurudu 2026 — SLIIT City University</title>
+<link href="https://fonts.googleapis.com/css2?family=Yatra+One&family=Noto+Serif:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9943A;
+    --gold-light: #E8BC6A;
+    --gold-pale: #F5E4B8;
+    --maroon: #7A1F28;
+    --maroon-dark: #4E1219;
+    --cream: #FAF3E0;
+    --cream-dark: #EEE2C8;
+    --forest: #2D5A27;
+    --forest-light: #4A7C41;
+    --text-dark: #2B1A0E;
+    --text-mid: #5C3D2E;
+    --text-light: #9C7D5A;
+    --success: #2D7A3A;
+    --danger: #8B1A1A;
+    --pending: #8B6914;
+    --shadow: 0 4px 24px rgba(122,31,40,0.12);
+    --shadow-lg: 0 8px 48px rgba(122,31,40,0.18);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text-dark);
+    min-height: 100vh;
+  }
+
+  /* ── PATTERN BACKGROUND ── */
+  .pattern-bg {
+    background-color: var(--cream);
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(201,148,58,0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(122,31,40,0.06) 0%, transparent 50%),
+      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C9943A' fill-opacity='0.05'%3E%3Cpath d='M30 0l4 8h8l-6.5 5 2.5 8L30 16l-8 5 2.5-8L18 8h8z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  /* ── NAVIGATION ── */
+  nav {
+    background: linear-gradient(135deg, var(--maroon-dark) 0%, var(--maroon) 100%);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.3);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .nav-brand {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .nav-logo-circle {
+    width: 40px; height: 40px;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Yatra One', cursive;
+    font-size: 18px; color: var(--maroon-dark);
+    box-shadow: 0 2px 8px rgba(201,148,58,0.4);
+  }
+  .nav-title {
+    font-family: 'Yatra One', cursive;
+    color: var(--gold-light);
+    font-size: 1.1rem;
+    letter-spacing: 0.02em;
+  }
+  .nav-subtitle { color: rgba(245,228,184,0.6); font-size: 0.7rem; }
+  .nav-tabs { display: flex; gap: 4px; }
+  .nav-tab {
+    padding: 6px 16px;
+    border: none; background: transparent;
+    color: rgba(245,228,184,0.7);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem; font-weight: 500;
+    cursor: pointer; border-radius: 6px;
+    transition: all 0.2s;
+  }
+  .nav-tab:hover { background: rgba(201,148,58,0.15); color: var(--gold-light); }
+  .nav-tab.active { background: rgba(201,148,58,0.25); color: var(--gold-light); }
+  .nav-user {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .avatar {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--maroon) 100%);
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 600; font-size: 0.85rem;
+    border: 2px solid var(--gold-light);
+  }
+  .nav-name { color: var(--gold-pale); font-size: 0.85rem; }
+
+  /* ── VIEWS ── */
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* ── AUTH SCREENS ── */
+  .auth-wrap {
+    min-height: calc(100vh - 64px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 2rem;
+  }
+  .auth-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2.5rem;
+    width: 100%; max-width: 440px;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--cream-dark);
+    position: relative; overflow: hidden;
+  }
+  .auth-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    background: linear-gradient(90deg, var(--maroon), var(--gold), var(--maroon));
+  }
+  .auth-header { text-align: center; margin-bottom: 2rem; }
+  .auth-logo {
+    width: 72px; height: 72px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    border-radius: 50%; margin: 0 auto 1rem;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Yatra One', cursive; font-size: 32px;
+    color: var(--maroon-dark);
+    box-shadow: 0 4px 16px rgba(201,148,58,0.35);
+  }
+  .auth-title { font-family: 'Yatra One', cursive; color: var(--maroon); font-size: 1.6rem; }
+  .auth-sub { color: var(--text-light); font-size: 0.85rem; margin-top: 4px; }
+
+  .form-group { margin-bottom: 1.2rem; }
+  .form-label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-mid); margin-bottom: 6px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .form-input {
+    width: 100%; padding: 10px 14px;
+    border: 1.5px solid var(--cream-dark);
+    border-radius: 10px; background: var(--cream);
+    font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+    color: var(--text-dark);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+  }
+  .form-input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,148,58,0.12); background: white; }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 10px 20px; border: none; border-radius: 10px;
+    font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 600;
+    cursor: pointer; transition: all 0.2s; text-decoration: none;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--maroon) 0%, var(--maroon-dark) 100%);
+    color: var(--gold-pale);
+    box-shadow: 0 2px 12px rgba(122,31,40,0.3);
+    width: 100%;
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(122,31,40,0.4); }
+  .btn-google {
+    background: white; border: 1.5px solid var(--cream-dark);
+    color: var(--text-dark); width: 100%;
+  }
+  .btn-google:hover { background: var(--cream); border-color: var(--gold); }
+  .btn-gold {
+    background: linear-gradient(135deg, var(--gold) 0%, #B8832A 100%);
+    color: white; box-shadow: 0 2px 12px rgba(201,148,58,0.3);
+  }
+  .btn-gold:hover { transform: translateY(-1px); }
+  .btn-sm { padding: 6px 14px; font-size: 0.8rem; border-radius: 8px; }
+  .btn-danger { background: var(--danger); color: white; }
+  .btn-success { background: var(--success); color: white; }
+  .btn-outline {
+    background: transparent; border: 1.5px solid var(--gold);
+    color: var(--gold);
+  }
+  .btn-outline:hover { background: rgba(201,148,58,0.08); }
+
+  .divider { display: flex; align-items: center; gap: 12px; margin: 1.2rem 0; }
+  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--cream-dark); }
+  .divider span { font-size: 0.75rem; color: var(--text-light); }
+
+  .auth-link { text-align: center; margin-top: 1.2rem; font-size: 0.85rem; color: var(--text-light); }
+  .auth-link a { color: var(--maroon); font-weight: 600; cursor: pointer; text-decoration: underline; }
+
+  /* ── STUDENT DASHBOARD ── */
+  .dashboard-layout {
+    max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem;
+    display: grid; grid-template-columns: 1fr 340px; gap: 1.5rem;
+  }
+
+  .card {
+    background: white; border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(201,148,58,0.1);
+  }
+
+  .event-hero {
+    grid-column: 1 / -1;
+    background: linear-gradient(135deg, var(--maroon-dark) 0%, var(--maroon) 60%, #9B3A2A 100%);
+    border-radius: 20px;
+    padding: 2.5rem;
+    color: white;
+    position: relative; overflow: hidden;
+    box-shadow: var(--shadow-lg);
+  }
+  .event-hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='rgba(201,148,58,0.08)'%3E%3Cpolygon points='50,5 61,35 95,35 68,57 79,91 50,70 21,91 32,57 5,35 39,35'/%3E%3C/g%3E%3C/svg%3E") repeat;
+    background-size: 80px;
+  }
+  .event-hero-content { position: relative; z-index: 1; }
+  .event-badge {
+    display: inline-block;
+    background: rgba(201,148,58,0.25);
+    border: 1px solid rgba(201,148,58,0.5);
+    color: var(--gold-light);
+    padding: 4px 14px; border-radius: 20px;
+    font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; margin-bottom: 1rem;
+  }
+  .event-hero h1 {
+    font-family: 'Yatra One', cursive;
+    font-size: 2.2rem; color: var(--gold-light);
+    line-height: 1.2; margin-bottom: 0.5rem;
+  }
+  .event-hero p { color: rgba(245,228,184,0.8); font-size: 0.95rem; }
+
+  .event-details-row {
+    display: flex; gap: 2rem; margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .event-detail-item { display: flex; align-items: center; gap: 8px; }
+  .event-detail-item .icon {
+    width: 32px; height: 32px; background: rgba(201,148,58,0.2);
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+  .event-detail-item .label { font-size: 0.7rem; color: rgba(245,228,184,0.6); text-transform: uppercase; letter-spacing: 0.05em; }
+  .event-detail-item .value { font-size: 0.9rem; color: var(--gold-pale); font-weight: 500; }
+
+  /* Countdown */
+  .countdown {
+    display: flex; gap: 1rem; margin-top: 1.5rem;
+  }
+  .countdown-unit {
+    text-align: center;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(201,148,58,0.3);
+    border-radius: 12px; padding: 10px 18px;
+    min-width: 70px;
+  }
+  .countdown-num {
+    font-family: 'Yatra One', cursive;
+    font-size: 1.8rem; color: var(--gold-light);
+    line-height: 1;
+  }
+  .countdown-label { font-size: 0.65rem; color: rgba(245,228,184,0.6); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 2px; }
+
+  /* Status card */
+  .status-section h3 { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-light); margin-bottom: 1rem; }
+  .status-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 14px; border-radius: 20px;
+    font-size: 0.8rem; font-weight: 600;
+  }
+  .status-badge.pending { background: rgba(139,105,20,0.12); color: var(--pending); border: 1px solid rgba(139,105,20,0.25); }
+  .status-badge.approved { background: rgba(45,122,58,0.1); color: var(--success); border: 1px solid rgba(45,122,58,0.25); }
+  .status-badge.rejected { background: rgba(139,26,26,0.1); color: var(--danger); border: 1px solid rgba(139,26,26,0.2); }
+  .status-badge.not-submitted { background: rgba(156,125,90,0.1); color: var(--text-light); border: 1px solid rgba(156,125,90,0.2); }
+  .status-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+  /* Upload area */
+  .upload-area {
+    border: 2px dashed var(--cream-dark);
+    border-radius: 14px; padding: 2rem;
+    text-align: center; cursor: pointer;
+    transition: all 0.2s;
+    background: var(--cream);
+    margin-top: 1rem;
+  }
+  .upload-area:hover { border-color: var(--gold); background: rgba(201,148,58,0.04); }
+  .upload-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+  .upload-text { font-size: 0.85rem; color: var(--text-mid); }
+  .upload-hint { font-size: 0.75rem; color: var(--text-light); margin-top: 4px; }
+
+  /* QR display */
+  .qr-card {
+    text-align: center; padding: 1.5rem;
+  }
+  .qr-box {
+    width: 160px; height: 160px; margin: 0 auto 1rem;
+    background: white; border: 3px solid var(--gold);
+    border-radius: 16px; padding: 8px;
+    box-shadow: 0 4px 20px rgba(201,148,58,0.2);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .qr-placeholder {
+    width: 100%; height: 100%;
+    background: repeating-conic-gradient(#000 0% 25%, #fff 0% 50%) 0 0 / 12px 12px;
+    border-radius: 8px; opacity: 0.85;
+  }
+  .qr-warning {
+    font-size: 0.75rem; color: var(--danger);
+    background: rgba(139,26,26,0.07); padding: 8px 12px;
+    border-radius: 8px; margin-top: 0.5rem;
+    border: 1px solid rgba(139,26,26,0.15);
+  }
+
+  /* Contact section */
+  .contact-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 0; border-bottom: 1px solid var(--cream-dark);
+  }
+  .contact-item:last-child { border-bottom: none; }
+  .contact-name { font-weight: 600; font-size: 0.9rem; }
+  .contact-num { font-size: 0.8rem; color: var(--text-light); }
+  .btn-whatsapp {
+    background: #25D366; color: white; border: none;
+    padding: 6px 14px; border-radius: 8px; font-size: 0.8rem;
+    font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 5px;
+    transition: opacity 0.2s;
+  }
+  .btn-whatsapp:hover { opacity: 0.85; }
+
+  /* ── ADMIN DASHBOARD ── */
+  .admin-layout {
+    max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem;
+  }
+  .admin-header { margin-bottom: 1.5rem; }
+  .admin-header h2 { font-family: 'Yatra One', cursive; font-size: 1.6rem; color: var(--maroon); }
+  .admin-header p { color: var(--text-light); font-size: 0.85rem; }
+
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+  .stat-card {
+    background: white; border-radius: 14px; padding: 1.2rem;
+    border: 1px solid rgba(201,148,58,0.1);
+    box-shadow: var(--shadow);
+  }
+  .stat-num { font-family: 'Yatra One', cursive; font-size: 2rem; color: var(--maroon); }
+  .stat-label { font-size: 0.75rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
+  .stat-card.gold { border-top: 3px solid var(--gold); }
+  .stat-card.green { border-top: 3px solid var(--forest-light); }
+  .stat-card.red { border-top: 3px solid var(--danger); }
+  .stat-card.blue { border-top: 3px solid #3A7ABD; }
+
+  .filters-bar {
+    background: white; border-radius: 14px; padding: 1rem 1.2rem;
+    box-shadow: var(--shadow); margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+    border: 1px solid rgba(201,148,58,0.1);
+  }
+  .filter-group { display: flex; align-items: center; gap: 8px; }
+  .filter-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-light); }
+  .filter-select {
+    border: 1.5px solid var(--cream-dark); border-radius: 8px;
+    padding: 6px 10px; font-size: 0.82rem;
+    font-family: 'DM Sans', sans-serif; background: var(--cream);
+    color: var(--text-dark); cursor: pointer; outline: none;
+  }
+  .filter-select:focus { border-color: var(--gold); }
+  .search-input {
+    border: 1.5px solid var(--cream-dark); border-radius: 8px;
+    padding: 6px 12px; font-size: 0.82rem;
+    font-family: 'DM Sans', sans-serif; background: var(--cream);
+    color: var(--text-dark); outline: none; min-width: 200px;
+  }
+  .search-input:focus { border-color: var(--gold); }
+
+  /* Table */
+  .table-wrap {
+    background: white; border-radius: 14px; overflow: hidden;
+    box-shadow: var(--shadow); border: 1px solid rgba(201,148,58,0.1);
+  }
+  table { width: 100%; border-collapse: collapse; }
+  thead { background: linear-gradient(135deg, var(--maroon-dark), var(--maroon)); }
+  thead th {
+    padding: 12px 16px; text-align: left;
+    font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--gold-pale);
+  }
+  tbody tr { border-bottom: 1px solid var(--cream-dark); transition: background 0.15s; }
+  tbody tr:hover { background: rgba(201,148,58,0.03); }
+  tbody tr:last-child { border-bottom: none; }
+  td { padding: 12px 16px; font-size: 0.85rem; vertical-align: middle; }
+  .td-name { font-weight: 600; }
+  .td-sub { font-size: 0.75rem; color: var(--text-light); }
+  .receipt-thumb {
+    width: 44px; height: 36px; object-fit: cover; border-radius: 6px;
+    border: 2px solid var(--cream-dark); cursor: pointer;
+    background: var(--cream-dark); display: flex; align-items: center; justify-content: center;
+    font-size: 10px; color: var(--text-light);
+  }
+  .actions { display: flex; gap: 6px; }
+
+  /* QR status badges */
+  .qr-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 12px; font-size: 0.72rem; font-weight: 600; }
+  .qr-badge.sent { background: rgba(58,122,189,0.1); color: #2A5F99; border: 1px solid rgba(58,122,189,0.25); }
+  .qr-badge.used { background: rgba(45,122,58,0.1); color: var(--success); border: 1px solid rgba(45,122,58,0.25); }
+  .qr-badge.not-sent { background: rgba(156,125,90,0.1); color: var(--text-light); border: 1px solid rgba(156,125,90,0.2); }
+
+  /* ── GATE SCAN VIEW ── */
+  .gate-layout {
+    max-width: 500px; margin: 0 auto; padding: 2rem 1.5rem;
+  }
+  .gate-scanner {
+    background: var(--maroon-dark);
+    border-radius: 20px; padding: 2rem; text-align: center;
+    box-shadow: var(--shadow-lg); margin-bottom: 1.5rem;
+  }
+  .scanner-frame {
+    width: 220px; height: 220px; margin: 0 auto 1.5rem;
+    border: 3px solid var(--gold);
+    border-radius: 16px; position: relative;
+    background: rgba(0,0,0,0.3);
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .scanner-corner {
+    position: absolute; width: 24px; height: 24px;
+    border-color: var(--gold-light); border-style: solid;
+  }
+  .scanner-corner.tl { top: 8px; left: 8px; border-width: 3px 0 0 3px; border-radius: 4px 0 0 0; }
+  .scanner-corner.tr { top: 8px; right: 8px; border-width: 3px 3px 0 0; border-radius: 0 4px 0 0; }
+  .scanner-corner.bl { bottom: 8px; left: 8px; border-width: 0 0 3px 3px; border-radius: 0 0 0 4px; }
+  .scanner-corner.br { bottom: 8px; right: 8px; border-width: 0 3px 3px 0; border-radius: 0 0 4px 0; }
+  .scanner-line {
+    position: absolute; width: 80%; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    animation: scanLine 2s linear infinite;
+  }
+  @keyframes scanLine { 0% { top: 12px; } 100% { top: 196px; } }
+  .scan-icon { font-size: 3rem; color: rgba(201,148,58,0.4); }
+  .gate-title { font-family: 'Yatra One', cursive; color: var(--gold-light); font-size: 1.3rem; margin-bottom: 0.3rem; }
+  .gate-sub { color: rgba(245,228,184,0.6); font-size: 0.8rem; margin-bottom: 1.5rem; }
+  .scan-btn {
+    background: linear-gradient(135deg, var(--gold), #B8832A);
+    color: white; border: none; padding: 12px 32px;
+    border-radius: 12px; font-family: 'DM Sans', sans-serif;
+    font-size: 1rem; font-weight: 600; cursor: pointer;
+    box-shadow: 0 4px 16px rgba(201,148,58,0.35);
+    transition: all 0.2s;
+  }
+  .scan-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(201,148,58,0.45); }
+
+  .result-card {
+    border-radius: 16px; padding: 1.5rem; text-align: center;
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+  .result-card.success { background: rgba(45,122,58,0.1); border: 2px solid var(--success); }
+  .result-card.fail { background: rgba(139,26,26,0.1); border: 2px solid var(--danger); }
+  .result-icon { font-size: 3rem; margin-bottom: 0.5rem; }
+  .result-title { font-family: 'Yatra One', cursive; font-size: 1.4rem; margin-bottom: 0.3rem; }
+  .result-card.success .result-title { color: var(--success); }
+  .result-card.fail .result-title { color: var(--danger); }
+  .result-info { font-size: 0.85rem; color: var(--text-mid); }
+
+  @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(30,10,5,0.6); z-index: 200;
+    align-items: center; justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: white; border-radius: 20px; padding: 2rem;
+    max-width: 480px; width: 90%; max-height: 90vh;
+    overflow-y: auto; box-shadow: var(--shadow-lg);
+    position: relative;
+    animation: fadeIn 0.25s ease;
+  }
+  .modal::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    background: linear-gradient(90deg, var(--maroon), var(--gold), var(--maroon));
+    border-radius: 20px 20px 0 0;
+  }
+  .modal-close {
+    position: absolute; top: 1rem; right: 1rem;
+    background: var(--cream); border: none; border-radius: 8px;
+    width: 30px; height: 30px; cursor: pointer; font-size: 1rem;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-light); transition: all 0.2s;
+  }
+  .modal-close:hover { background: var(--cream-dark); color: var(--text-dark); }
+  .modal-title { font-family: 'Yatra One', cursive; font-size: 1.3rem; color: var(--maroon); margin-bottom: 1.2rem; }
+  .modal-receipt-img {
+    width: 100%; border-radius: 12px; border: 2px solid var(--cream-dark);
+    background: repeating-linear-gradient(45deg, #f0e8d0, #f0e8d0 10px, #e8dcc0 10px, #e8dcc0 20px);
+    height: 200px; display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem; color: var(--text-light); margin-bottom: 1rem;
+  }
+
+  /* ── DECORATIVE BORDER ── */
+  .rangoli-border {
+    height: 6px;
+    background: repeating-linear-gradient(90deg, var(--maroon) 0px, var(--maroon) 12px, var(--gold) 12px, var(--gold) 18px, var(--forest) 18px, var(--forest) 24px, var(--gold) 24px, var(--gold) 30px);
+    margin: 0;
+  }
+
+  /* ── PROFILE COMPLETE ── */
+  .profile-steps { display: flex; gap: 0; margin-bottom: 1.5rem; }
+  .step { flex: 1; text-align: center; position: relative; }
+  .step-num {
+    width: 32px; height: 32px; border-radius: 50%; margin: 0 auto 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem; font-weight: 700;
+  }
+  .step.done .step-num { background: var(--success); color: white; }
+  .step.active .step-num { background: var(--gold); color: white; }
+  .step.pending .step-num { background: var(--cream-dark); color: var(--text-light); }
+  .step-label { font-size: 0.7rem; color: var(--text-light); }
+  .step-line {
+    position: absolute; top: 16px; left: calc(50% + 16px);
+    right: calc(-50% + 16px); height: 2px; background: var(--cream-dark);
+  }
+  .step.done .step-line { background: var(--success); }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 2rem; right: 2rem;
+    background: var(--maroon-dark); color: var(--gold-pale);
+    padding: 12px 20px; border-radius: 12px;
+    font-size: 0.85rem; box-shadow: var(--shadow-lg);
+    z-index: 300; display: none;
+    animation: fadeIn 0.25s ease;
+  }
+  .toast.show { display: block; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .dashboard-layout { grid-template-columns: 1fr; }
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .nav-tabs { display: none; }
+    .event-hero h1 { font-size: 1.6rem; }
+    .countdown { gap: 0.6rem; }
+    .countdown-unit { padding: 8px 12px; min-width: 55px; }
+    .countdown-num { font-size: 1.4rem; }
+    table { font-size: 0.8rem; }
+    td, th { padding: 8px 10px; }
+  }
+
+  /* Pill toggle for view switching */
+  .view-switcher {
+    display: flex; gap: 0; background: rgba(122,31,40,0.1);
+    border-radius: 10px; padding: 3px; margin: 0 auto;
+  }
+  .vs-btn {
+    padding: 7px 18px; border: none; border-radius: 8px;
+    font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 600;
+    cursor: pointer; transition: all 0.2s;
+    background: transparent; color: var(--maroon);
+  }
+  .vs-btn.active { background: var(--maroon); color: var(--gold-pale); }
+</style>
+</head>
+<body class="pattern-bg">
+
+<div class="rangoli-border"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">
+    <div class="nav-logo-circle">අ</div>
+    <div>
+      <div class="nav-title">Awurudu 2026</div>
+      <div class="nav-subtitle">SLIIT City University</div>
+    </div>
+  </div>
+
+  <div class="view-switcher" style="margin:0;">
+    <button class="vs-btn active" onclick="showView('login')">Login</button>
+    <button class="vs-btn" onclick="showView('register')">Register</button>
+    <button class="vs-btn" onclick="showView('profile')">Profile</button>
+    <button class="vs-btn" onclick="showView('student')">Student</button>
+    <button class="vs-btn" onclick="showView('admin')">Admin</button>
+    <button class="vs-btn" onclick="showView('gate')">Gate</button>
+  </div>
+
+  <div class="nav-user">
+    <div class="avatar">H</div>
+    <span class="nav-name">Harith</span>
+  </div>
+</nav>
+
+<!-- ════════════════════════════════ LOGIN ════════════════════════════════ -->
+<div id="view-login" class="view active">
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="auth-logo">අ</div>
+        <div class="auth-title">Welcome Back</div>
+        <div class="auth-sub">Sign in to your Awurudu 2026 account</div>
+      </div>
+
+      <button class="btn btn-google" onclick="showToast('Redirecting to Google…')">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Continue with Google
+      </button>
+
+      <div class="divider"><span>or sign in with email</span></div>
+
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input type="email" class="form-input" placeholder="you@sliit.lk" value="harith@sliit.lk">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input type="password" class="form-input" placeholder="••••••••" value="password">
+      </div>
+
+      <button class="btn btn-primary" onclick="showView('student'); showToast('Signed in successfully!')">Sign In</button>
+
+      <div class="auth-link">
+        Don't have an account? <a onclick="showView('register')">Create one</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════ REGISTER ════════════════════════════════ -->
+<div id="view-register" class="view">
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="auth-logo">අ</div>
+        <div class="auth-title">Join Awurudu 2026</div>
+        <div class="auth-sub">SLIIT City University — 8th May 2026</div>
+      </div>
+
+      <button class="btn btn-google" onclick="showToast('Redirecting to Google…')">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Continue with Google
+      </button>
+
+      <div class="divider"><span>or register with email</span></div>
+
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input type="email" class="form-input" placeholder="you@sliit.lk">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input type="password" class="form-input" placeholder="Min 8 characters">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Confirm Password</label>
+        <input type="password" class="form-input" placeholder="Repeat password">
+      </div>
+
+      <button class="btn btn-primary" onclick="showView('profile'); showToast('Account created! Complete your profile.')">Create Account</button>
+
+      <div class="auth-link">
+        Already registered? <a onclick="showView('login')">Sign in</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════ PROFILE COMPLETE ════════════════════════════════ -->
+<div id="view-profile" class="view">
+  <div class="auth-wrap">
+    <div class="auth-card" style="max-width: 500px;">
+      <div class="auth-header">
+        <div class="auth-title">Complete Your Profile</div>
+        <div class="auth-sub">Required to access the registration portal</div>
+      </div>
+
+      <div class="profile-steps" style="margin-bottom:1.8rem;">
+        <div class="step done">
+          <div class="step-num">✓</div>
+          <div class="step-label">Account</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step active">
+          <div class="step-num">2</div>
+          <div class="step-label">Profile</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step pending">
+          <div class="step-num">3</div>
+          <div class="step-label">Payment</div>
+        </div>
+      </div>
+
+      <div style="text-align:center; margin-bottom:1.5rem;">
+        <div style="width:72px;height:72px;background:linear-gradient(135deg,var(--gold),var(--maroon));border-radius:50%;margin:0 auto 0.5rem;display:flex;align-items:center;justify-content:center;font-family:'Yatra One',cursive;font-size:32px;color:white;border:3px solid var(--gold-light);">H</div>
+        <div style="font-size:0.75rem;color:var(--text-light);">Avatar auto-generated from your name</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Full Name (as per Student ID)</label>
+        <input type="text" class="form-input" placeholder="e.g. Harith Perera">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Student Number</label>
+        <input type="text" class="form-input" placeholder="e.g. IT21234567">
+      </div>
+
+      <button class="btn btn-primary" onclick="showView('student'); showToast('Profile saved! You can now register.')">Save & Continue</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════ STUDENT DASHBOARD ════════════════════════════════ -->
+<div id="view-student" class="view">
+  <div class="dashboard-layout">
+
+    <!-- EVENT HERO -->
+    <div class="event-hero">
+      <div class="event-hero-content">
+        <div class="event-badge">🌸 Aluth Avurudu 2026</div>
+        <h1>SLIIT City University<br>Awurudu Celebration</h1>
+        <p>Join us for a vibrant celebration of the Sri Lankan New Year</p>
+
+        <div class="event-details-row">
+          <div class="event-detail-item">
+            <div class="icon">📅</div>
+            <div>
+              <div class="label">Date</div>
+              <div class="value">8th May 2026</div>
+            </div>
+          </div>
+          <div class="event-detail-item">
+            <div class="icon">📍</div>
+            <div>
+              <div class="label">Venue</div>
+              <div class="value">BMICH Kamatha, Colombo</div>
+            </div>
+          </div>
+          <div class="event-detail-item">
+            <div class="icon">⏰</div>
+            <div>
+              <div class="label">Start Time</div>
+              <div class="value">9:00 AM onwards</div>
+            </div>
+          </div>
+          <div class="event-detail-item">
+            <div class="icon">🎵</div>
+            <div>
+              <div class="label">After Party</div>
+              <div class="value">DJ After Party</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="countdown" id="countdown">
+          <div class="countdown-unit"><div class="countdown-num" id="cd-days">05</div><div class="countdown-label">Days</div></div>
+          <div class="countdown-unit"><div class="countdown-num" id="cd-hrs">14</div><div class="countdown-label">Hours</div></div>
+          <div class="countdown-unit"><div class="countdown-num" id="cd-min">32</div><div class="countdown-label">Mins</div></div>
+          <div class="countdown-unit"><div class="countdown-num" id="cd-sec">08</div><div class="countdown-label">Secs</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEFT COLUMN -->
+    <div>
+      <!-- Registration Status -->
+      <div class="card" style="margin-bottom:1.2rem;">
+        <div class="status-section">
+          <h3>Registration Status</h3>
+          <div id="status-display">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:1rem;">
+              <span class="status-badge pending"><span class="status-dot"></span>Pending Review</span>
+              <span style="font-size:0.78rem;color:var(--text-light);">Receipt uploaded 2 days ago</span>
+            </div>
+            <p style="font-size:0.82rem;color:var(--text-mid);line-height:1.5;">Your payment receipt has been submitted and is awaiting admin approval. You'll receive an email with your QR code once approved.</p>
+          </div>
+
+          <div style="margin-top:1rem;display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn btn-sm btn-outline" onclick="setStatus('pending')">Pending</button>
+            <button class="btn btn-sm btn-gold" onclick="setStatus('approved')">Approved</button>
+            <button class="btn btn-sm btn-danger" onclick="setStatus('rejected')">Rejected</button>
+            <button class="btn btn-sm" style="background:var(--cream-dark);color:var(--text-mid);" onclick="setStatus('not-submitted')">Not Submitted</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Upload Receipt -->
+      <div class="card">
+        <h3 style="font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-light);margin-bottom:0.8rem;">Payment Receipt</h3>
+        <div class="upload-area" onclick="showToast('File picker would open here')">
+          <div class="upload-icon">📎</div>
+          <div class="upload-text">Click to upload or drag & drop</div>
+          <div class="upload-hint">JPEG, PNG, PDF • Max 5MB</div>
+        </div>
+        <div style="margin-top:1rem;padding:10px 14px;background:var(--cream);border-radius:10px;border:1px solid var(--cream-dark);display:flex;align-items:center;justify-content:between;gap:10px;">
+          <div style="flex:1;">
+            <div style="font-size:0.82rem;font-weight:600;">payment_receipt.jpg</div>
+            <div style="font-size:0.72rem;color:var(--text-light);">1.2 MB • Uploaded 2 May 2026</div>
+          </div>
+          <button class="btn btn-sm btn-outline" onclick="openModal('receipt-modal')">View</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div>
+      <!-- QR Code (shown when approved) -->
+      <div class="card qr-card" style="margin-bottom:1.2rem;">
+        <h3 style="font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-light);margin-bottom:1rem;">Your Entry QR Code</h3>
+        <div class="qr-box">
+          <div class="qr-placeholder"></div>
+        </div>
+        <div style="font-family:'Noto Serif',serif;font-size:0.85rem;color:var(--text-mid);margin-bottom:0.5rem;">Present this at the entrance on 8th May 2026</div>
+        <div class="qr-warning">Single-use only — Do not share this code</div>
+      </div>
+
+      <!-- Contacts -->
+      <div class="card">
+        <h3 style="font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-light);margin-bottom:0.8rem;">Contact Organisers</h3>
+        <div class="contact-item">
+          <div>
+            <div class="contact-name">Harith</div>
+            <div class="contact-num">+94 768 570 754</div>
+          </div>
+          <button class="btn-whatsapp" onclick="showToast('Opening WhatsApp…')">
+            <svg width="14" height="14" fill="white" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+            Chat
+          </button>
+        </div>
+        <div class="contact-item">
+          <div>
+            <div class="contact-name">Minol</div>
+            <div class="contact-num">+94 765 373 271</div>
+          </div>
+          <button class="btn-whatsapp" onclick="showToast('Opening WhatsApp…')">
+            <svg width="14" height="14" fill="white" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+            Chat
+          </button>
+        </div>
+        <div class="contact-item">
+          <div>
+            <div class="contact-name">Alex</div>
+            <div class="contact-num">+94 706 544 700</div>
+          </div>
+          <button class="btn-whatsapp" onclick="showToast('Opening WhatsApp…')">
+            <svg width="14" height="14" fill="white" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+            Chat
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════════════════════════════ ADMIN DASHBOARD ════════════════════════════════ -->
+<div id="view-admin" class="view">
+  <div class="admin-layout">
+    <div class="admin-header">
+      <h2>Admin Dashboard</h2>
+      <p>Awurudu 2026 — Registration Management</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card gold">
+        <div class="stat-num">342</div>
+        <div class="stat-label">Total Registrations</div>
+      </div>
+      <div class="stat-card" style="border-top:3px solid var(--pending);">
+        <div class="stat-num" style="color:var(--pending);">47</div>
+        <div class="stat-label">Pending Review</div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-num" style="color:var(--success);">278</div>
+        <div class="stat-label">Approved</div>
+      </div>
+      <div class="stat-card" style="border-top:3px solid #3A7ABD;">
+        <div class="stat-num" style="color:#2A5F99;">134</div>
+        <div class="stat-label">QR Used at Gate</div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters-bar">
+      <div class="filter-group">
+        <span class="filter-label">Status</span>
+        <select class="filter-select">
+          <option>All</option>
+          <option>Pending</option>
+          <option>Approved</option>
+          <option>Rejected</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">QR</span>
+        <select class="filter-select">
+          <option>All</option>
+          <option>QR Sent</option>
+          <option>QR Used</option>
+          <option>Not Sent</option>
+        </select>
+      </div>
+      <input class="search-input" placeholder="Search by name, student no., or email…">
+      <button class="btn btn-gold btn-sm" style="margin-left:auto;" onclick="showToast('Export triggered!')">Export CSV</button>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Student</th>
+            <th>Reg. Date</th>
+            <th>Receipt</th>
+            <th>Status</th>
+            <th>QR Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="admin-table">
+          <!-- Injected by JS -->
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════════════════════════════ GATE SCAN ════════════════════════════════ -->
+<div id="view-gate" class="view">
+  <div class="gate-layout">
+    <div class="gate-scanner">
+      <div class="gate-title">Gate Entry Scanner</div>
+      <div class="gate-sub">BMICH Kamatha • 8th May 2026</div>
+
+      <div class="scanner-frame">
+        <div class="scanner-corner tl"></div>
+        <div class="scanner-corner tr"></div>
+        <div class="scanner-corner bl"></div>
+        <div class="scanner-corner br"></div>
+        <div class="scanner-line"></div>
+        <div class="scan-icon">⬛</div>
+      </div>
+
+      <button class="scan-btn" onclick="simulateScan()">
+        Simulate QR Scan
+      </button>
+    </div>
+
+    <div id="gate-result" class="result-card">
+      <div class="result-icon" id="result-icon"></div>
+      <div class="result-title" id="result-title"></div>
+      <div class="result-info" id="result-info"></div>
+      <div style="margin-top:1rem;">
+        <button class="btn btn-outline" onclick="resetScan()">Scan Next</button>
+      </div>
+    </div>
+
+    <!-- Recent scans log -->
+    <div class="card">
+      <h3 style="font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-light);margin-bottom:1rem;">Recent Scans</h3>
+      <div id="scan-log">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--cream-dark);">
+          <div><div style="font-size:0.85rem;font-weight:600;">Harith Perera — IT21123456</div><div style="font-size:0.75rem;color:var(--text-light);">09:14 AM</div></div>
+          <span class="status-badge approved" style="font-size:0.72rem;"><span class="status-dot"></span>Granted</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--cream-dark);">
+          <div><div style="font-size:0.85rem;font-weight:600;">Minol Silva — IT21234567</div><div style="font-size:0.75rem;color:var(--text-light);">09:12 AM</div></div>
+          <span class="status-badge approved" style="font-size:0.72rem;"><span class="status-dot"></span>Granted</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;">
+          <div><div style="font-size:0.85rem;font-weight:600;">Unknown QR Token</div><div style="font-size:0.75rem;color:var(--text-light);">09:10 AM</div></div>
+          <span class="status-badge rejected" style="font-size:0.72rem;"><span class="status-dot"></span>Denied</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:1.5rem;color:var(--text-light);font-size:0.75rem;">
+      Developed and Published by Harith &bull; SLIIT City University Awurudu 2026
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════ MODALS ════════════════════════════════ -->
+
+<!-- Receipt Modal -->
+<div id="receipt-modal" class="modal-overlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('receipt-modal')">✕</button>
+    <div class="modal-title">Payment Receipt</div>
+    <div class="modal-receipt-img">Receipt Image Preview (payment_receipt.jpg)</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+      <div style="font-size:0.82rem;">
+        <div style="color:var(--text-light);text-transform:uppercase;font-size:0.7rem;letter-spacing:0.05em;margin-bottom:4px;">Student</div>
+        <div style="font-weight:600;">Harith Perera</div>
+      </div>
+      <div style="font-size:0.82rem;">
+        <div style="color:var(--text-light);text-transform:uppercase;font-size:0.7rem;letter-spacing:0.05em;margin-bottom:4px;">Student No.</div>
+        <div style="font-weight:600;">IT21123456</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:1.2rem;">
+      <button class="btn btn-success" style="flex:1;" onclick="approveFromModal()">Approve</button>
+      <button class="btn btn-danger" style="flex:1;" onclick="rejectFromModal()">Reject</button>
+    </div>
+    <div style="margin-top:0.8rem;">
+      <input class="form-input" placeholder="Rejection reason (optional)…" style="font-size:0.82rem;">
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast"></div>
+
+<script>
+// ── VIEW SWITCHING ──
+function showView(v) {
+  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+  document.getElementById('view-' + v).classList.add('active');
+  document.querySelectorAll('.vs-btn').forEach((btn, i) => {
+    btn.classList.toggle('active', btn.getAttribute('onclick').includes("'" + v + "'"));
+  });
+}
+
+// ── TOAST ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── MODALS ──
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
+});
+
+function approveFromModal() {
+  closeModal('receipt-modal');
+  showToast('Receipt approved — QR email sent!');
+}
+function rejectFromModal() {
+  closeModal('receipt-modal');
+  showToast('Receipt rejected — student notified.');
+}
+
+// ── STUDENT STATUS TOGGLE ──
+function setStatus(s) {
+  const map = {
+    pending: { cls: 'pending', label: 'Pending Review', msg: 'Your receipt is awaiting admin review.' },
+    approved: { cls: 'approved', label: 'Approved', msg: 'Your receipt has been approved. Check your email for the QR code.' },
+    rejected: { cls: 'rejected', label: 'Rejected', msg: 'Your receipt was not approved. Please re-upload or contact an organiser.' },
+    'not-submitted': { cls: 'not-submitted', label: 'Not Submitted', msg: 'Please upload your payment receipt to proceed.' }
+  };
+  const d = map[s];
+  document.getElementById('status-display').innerHTML = `
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:1rem;">
+      <span class="status-badge ${d.cls}"><span class="status-dot"></span>${d.label}</span>
+    </div>
+    <p style="font-size:0.82rem;color:var(--text-mid);line-height:1.5;">${d.msg}</p>`;
+}
+
+// ── COUNTDOWN ──
+function updateCountdown() {
+  const target = new Date('2026-05-08T09:00:00');
+  const now = new Date();
+  let diff = Math.max(0, target - now);
+  const days = Math.floor(diff / 86400000); diff %= 86400000;
+  const hrs = Math.floor(diff / 3600000); diff %= 3600000;
+  const min = Math.floor(diff / 60000); diff %= 60000;
+  const sec = Math.floor(diff / 1000);
+  document.getElementById('cd-days').textContent = String(days).padStart(2,'0');
+  document.getElementById('cd-hrs').textContent = String(hrs).padStart(2,'0');
+  document.getElementById('cd-min').textContent = String(min).padStart(2,'0');
+  document.getElementById('cd-sec').textContent = String(sec).padStart(2,'0');
+}
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
+// ── ADMIN TABLE ──
+const mockData = [
+  { name: 'Harith Perera', num: 'IT21123456', email: 'harith@sliit.lk', date: '1 May', status: 'pending', qr: 'not-sent' },
+  { name: 'Minol Silva', num: 'IT21234567', email: 'minol@sliit.lk', date: '30 Apr', status: 'approved', qr: 'sent' },
+  { name: 'Alex Fernando', num: 'IT21345678', email: 'alex@sliit.lk', date: '29 Apr', status: 'approved', qr: 'used' },
+  { name: 'Sahan Jayawardena', num: 'IT21456789', email: 'sahan@sliit.lk', date: '28 Apr', status: 'rejected', qr: 'not-sent' },
+  { name: 'Nimasha Perera', num: 'IT21567890', email: 'nimasha@sliit.lk', date: '27 Apr', status: 'pending', qr: 'not-sent' },
+  { name: 'Kavisha Rathnayake', num: 'IT21678901', email: 'kavisha@sliit.lk', date: '26 Apr', status: 'approved', qr: 'sent' },
+];
+
+const statusBadge = { pending: 'pending', approved: 'approved', rejected: 'rejected' };
+const qrBadge = { sent: 'sent', used: 'used', 'not-sent': 'not-sent' };
+const qrLabel = { sent: 'QR Sent', used: 'QR Used', 'not-sent': 'Not Sent' };
+
+function renderTable() {
+  const tbody = document.getElementById('admin-table');
+  tbody.innerHTML = mockData.map((r, i) => `
+    <tr>
+      <td>
+        <div class="td-name">${r.name}</div>
+        <div class="td-sub">${r.num} &bull; ${r.email}</div>
+      </td>
+      <td style="color:var(--text-light);font-size:0.8rem;">${r.date}</td>
+      <td>
+        <div class="receipt-thumb" onclick="openModal('receipt-modal')">View</div>
+      </td>
+      <td><span class="status-badge ${statusBadge[r.status]}" style="font-size:0.72rem;"><span class="status-dot"></span>${r.status.charAt(0).toUpperCase()+r.status.slice(1)}</span></td>
+      <td><span class="qr-badge ${qrBadge[r.qr]}">${qrLabel[r.qr]}</span></td>
+      <td>
+        <div class="actions">
+          ${r.status === 'pending' ? `<button class="btn btn-sm btn-success" onclick="adminApprove(${i})">Approve</button><button class="btn btn-sm btn-danger" onclick="adminReject(${i})">Reject</button>` : ''}
+          ${r.status === 'approved' && r.qr !== 'used' ? `<button class="btn btn-sm btn-gold" onclick="showToast('QR email sent to ${r.name}!')">Resend QR</button>` : ''}
+          ${r.status === 'rejected' ? `<span style="font-size:0.75rem;color:var(--text-light);">—</span>` : ''}
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function adminApprove(i) {
+  mockData[i].status = 'approved';
+  mockData[i].qr = 'sent';
+  renderTable();
+  showToast('Approved — QR invitation email sent!');
+}
+
+function adminReject(i) {
+  mockData[i].status = 'rejected';
+  renderTable();
+  showToast('Rejected — student notified.');
+}
+
+renderTable();
+
+// ── GATE SCAN SIMULATION ──
+let scanCount = 0;
+const scanScenarios = [
+  { success: true, name: 'Sahan Jayawardena', num: 'IT21456789', time: '09:17 AM' },
+  { success: false, reason: 'QR Already Used — Access Denied', time: '09:18 AM' },
+  { success: false, reason: 'Invalid QR Code', time: '09:19 AM' },
+  { success: true, name: 'Kavisha Rathnayake', num: 'IT21678901', time: '09:20 AM' },
+];
+
+function simulateScan() {
+  const s = scanScenarios[scanCount % scanScenarios.length];
+  const rc = document.getElementById('gate-result');
+  const ri = document.getElementById('result-icon');
+  const rt = document.getElementById('result-title');
+  const rinfo = document.getElementById('result-info');
+
+  rc.style.display = 'block';
+  if (s.success) {
+    rc.className = 'result-card success';
+    ri.textContent = '✅';
+    rt.textContent = 'Access Granted';
+    rinfo.textContent = `${s.name} — ${s.num}`;
+    addScanLog(s.name, s.num, s.time, true);
+  } else {
+    rc.className = 'result-card fail';
+    ri.textContent = '❌';
+    rt.textContent = s.reason;
+    rinfo.textContent = 'Entry not permitted. Contact event organiser if error.';
+    addScanLog('Unknown / Used Token', '', s.time, false);
+  }
+  scanCount++;
+}
+
+function addScanLog(name, num, time, granted) {
+  const log = document.getElementById('scan-log');
+  const div = document.createElement('div');
+  div.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--cream-dark);animation:fadeIn 0.25s ease;';
+  div.innerHTML = `
+    <div><div style="font-size:0.85rem;font-weight:600;">${name}${num ? ' — ' + num : ''}</div><div style="font-size:0.75rem;color:var(--text-light);">${time}</div></div>
+    <span class="status-badge ${granted ? 'approved' : 'rejected'}" style="font-size:0.72rem;"><span class="status-dot"></span>${granted ? 'Granted' : 'Denied'}</span>`;
+  log.prepend(div);
+}
+
+function resetScan() {
+  document.getElementById('gate-result').style.display = 'none';
+}
+</script>
+
+</body>
+</html>

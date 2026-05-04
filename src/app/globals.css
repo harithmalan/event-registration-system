@@ -3,25 +3,78 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --gold: #C9943A;
+  --gold-light: #E8BC6A;
+  --gold-pale: #F5E4B8;
+  --maroon: #7A1F28;
+  --maroon-dark: #4E1219;
+  --cream: #FAF3E0;
+  --cream-dark: #EEE2C8;
+  --forest: #2D5A27;
+  --forest-light: #4A7C41;
+  --text-dark: #2B1A0E;
+  --text-mid: #5C3D2E;
+  --text-light: #9C7D5A;
+  --success: #2D7A3A;
+  --danger: #8B1A1A;
+  --pending: #8B6914;
+  --shadow: 0 4px 24px rgba(122, 31, 40, 0.12);
+  --shadow-lg: 0 8px 48px rgba(122, 31, 40, 0.18);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-dm-sans), 'DM Sans', sans-serif;
+  background-color: #FAF3E0;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(201, 148, 58, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(122, 31, 40, 0.06) 0%, transparent 50%),
+    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C9943A' fill-opacity='0.05'%3E%3Cpath d='M30 0l4 8h8l-6.5 5 2.5 8L30 16l-8 5 2.5-8L18 8h8z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  color: #2B1A0E;
+  min-height: 100vh;
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+
+  .font-yatra {
+    font-family: var(--font-yatra-one), 'Yatra One', cursive;
+  }
+
+  .rangoli-border {
+    height: 6px;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--maroon) 0px,
+      var(--maroon) 12px,
+      var(--gold) 12px,
+      var(--gold) 18px,
+      var(--forest) 18px,
+      var(--forest) 24px,
+      var(--gold) 24px,
+      var(--gold) 30px
+    );
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--cream-dark);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--gold);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--maroon);
 }
