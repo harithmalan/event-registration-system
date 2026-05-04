@@ -6,7 +6,8 @@ import Image from 'next/image'
 import QRCode from 'react-qr-code'
 import {
   Calendar, MapPin, Clock, Music2,
-  CloudUpload, FileText, MessageCircle, AlertTriangle, X
+  CloudUpload, FileText, MessageCircle, AlertTriangle, X,
+  ClipboardList, ScanLine, ChevronRight
 } from 'lucide-react'
 import { createBrowserClient } from '@/lib/supabase-browser'
 import { formatDate } from '@/lib/utils'
@@ -250,6 +251,74 @@ if (registration) {
           </div>
         </div>
       </div>
+
+      {/* ── ADMIN QUICK ACCESS (admins only) ── */}
+      {profile?.is_admin && (
+        <div className="mb-5">
+          <p className="text-[0.72rem] font-bold uppercase tracking-widest text-[#9C7D5A] mb-3">
+            Admin Quick Access
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+            {/* Admin Panel Card */}
+            <a
+              href="/admin"
+              className="group relative flex items-center gap-4 p-5 rounded-2xl border-2 border-[#C9943A] overflow-hidden transition-all hover:shadow-lg hover:scale-[1.01]"
+              style={{ background: 'linear-gradient(135deg, #4E1219, #7A1F28)' }}
+            >
+              <div className="absolute inset-0 opacity-10"
+                style={{
+                  backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='rgba(201,148,58,0.3)'%3E%3Cpolygon points='30,3 37,21 57,21 41,34 47,55 30,42 13,55 19,34 3,21 23,21'/%3E%3C/g%3E%3C/svg%3E\")",
+                  backgroundSize: '50px'
+                }}
+              />
+              <div className="relative z-10 w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+                style={{ background: 'rgba(201,148,58,0.2)', border: '1px solid rgba(201,148,58,0.4)' }}>
+                <ClipboardList size={22} style={{ color: '#E8BC6A' }} />
+              </div>
+              <div className="relative z-10">
+                <p className="font-yatra text-lg leading-tight" style={{ color: '#E8BC6A' }}>
+                  Admin Panel
+                </p>
+                <p className="text-xs mt-0.5" style={{ color: 'rgba(245,228,184,0.7)' }}>
+                  Review and approve registrations
+                </p>
+              </div>
+              <ChevronRight size={18} className="relative z-10 ml-auto flex-shrink-0 opacity-60 group-hover:opacity-100 group-hover:translate-x-1 transition-all"
+                style={{ color: '#E8BC6A' }} />
+            </a>
+
+            {/* Gate Scan Card */}
+            <a
+              href="/gate"
+              className="group relative flex items-center gap-4 p-5 rounded-2xl border-2 overflow-hidden transition-all hover:shadow-lg hover:scale-[1.01]"
+              style={{ background: 'linear-gradient(135deg, #1A3A1A, #2D5A2D)', borderColor: '#4A9B4A' }}
+            >
+              <div className="absolute inset-0 opacity-10"
+                style={{
+                  backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='rgba(74,155,74,0.3)'%3E%3Cpolygon points='30,3 37,21 57,21 41,34 47,55 30,42 13,55 19,34 3,21 23,21'/%3E%3C/g%3E%3C/svg%3E\")",
+                  backgroundSize: '50px'
+                }}
+              />
+              <div className="relative z-10 w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+                style={{ background: 'rgba(74,155,74,0.2)', border: '1px solid rgba(74,155,74,0.4)' }}>
+                <ScanLine size={22} style={{ color: '#86EFAC' }} />
+              </div>
+              <div className="relative z-10">
+                <p className="font-yatra text-lg leading-tight" style={{ color: '#86EFAC' }}>
+                  Gate Scan
+                </p>
+                <p className="text-xs mt-0.5" style={{ color: 'rgba(134,239,172,0.7)' }}>
+                  Scan QR codes at the entrance
+                </p>
+              </div>
+              <ChevronRight size={18} className="relative z-10 ml-auto flex-shrink-0 opacity-60 group-hover:opacity-100 group-hover:translate-x-1 transition-all"
+                style={{ color: '#86EFAC' }} />
+            </a>
+
+          </div>
+        </div>
+      )}
 
       {/* ── 2-COL GRID ── */}
       <div className="grid grid-cols-1 md:grid-cols-[1fr_320px] gap-5">
