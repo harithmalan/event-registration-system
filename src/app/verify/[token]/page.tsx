@@ -1,5 +1,4 @@
-import { createServerClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
+import { supabaseAdmin } from '@/lib/supabase-server'
 import Image from 'next/image'
 import { Calendar, MapPin, Clock, CheckCircle2, XCircle, AlertTriangle } from 'lucide-react'
 
@@ -8,20 +7,7 @@ interface Props {
 }
 
 export default async function VerifyPage({ params }: Props) {
-  const cookieStore = cookies()
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) { return cookieStore.get(name)?.value },
-        set() {},
-        remove() {},
-      },
-    }
-  )
-
-  const { data: reg } = await supabase
+  const { data: reg } = await supabaseAdmin
     .from('registrations')
     .select('id, qr_used, qr_used_at, qr_token, profiles(full_name, student_number, email)')
     .eq('qr_token', params.token)
