@@ -61,7 +61,7 @@ export default function DashboardPage() {
       .from('profiles')
       .select('*')
       .eq('id', session.user.id)
-      .single()
+      .maybeSingle()
 
     if (!prof) { router.push('/profile-setup'); return }
     if (!prof.student_number) { router.push('/profile-setup'); return }
@@ -71,7 +71,7 @@ export default function DashboardPage() {
       .from('registrations')
       .select('*')
       .eq('user_id', session.user.id)
-      .single()
+      .maybeSingle()
     setRegistration(reg)
     setLoading(false)
   }, [supabase, router])
@@ -127,7 +127,7 @@ export default function DashboardPage() {
     setUploadSuccess('')
     try {
       const ext = selectedFile.name.split('.').pop()
-      const path = `receipts/${profile.id}/receipt.${ext}`
+      const path = `${profile.id}/receipt.${ext}`
       const { error: storageError } = await supabase.storage
         .from('receipts')
         .upload(path, selectedFile, { upsert: true })
@@ -136,12 +136,30 @@ export default function DashboardPage() {
       const { data: urlData } = supabase.storage.from('receipts').getPublicUrl(path)
       const receiptUrl = urlData.publicUrl
 
-      const { error: dbError } = await supabase.from('registrations').upsert({
-        user_id: profile.id,
-        receipt_url: receiptUrl,
-        receipt_status: 'pending',
-        uploaded_at: new Date().toISOString(),
-      }, { onConflict: 'user_id' })
+      let dbError = null
+if (registration) {
+  // Row exists — update it
+  const { error } = await supabase
+    .from('registrations')
+    .update({
+      receipt_url: receiptUrl,
+      receipt_status: 'pending',
+      uploaded_at: new Date().toISOString(),
+    })
+    .eq('user_id', profile.id)
+  dbError = error
+} else {
+  // No row yet — insert it
+  const { error } = await supabase
+    .from('registrations')
+    .insert({
+      user_id: profile.id,
+      receipt_url: receiptUrl,
+      receipt_status: 'pending',
+      uploaded_at: new Date().toISOString(),
+    })
+  dbError = error
+}
 
       if (dbError) throw new Error(dbError.message)
       setUploadSuccess('Receipt uploaded successfully! Awaiting admin review.')
@@ -185,7 +203,7 @@ export default function DashboardPage() {
             </div>
             <div>
               <div className="inline-block px-3 py-1 rounded-full text-[0.72rem] font-semibold uppercase tracking-widest mb-2" style={{ background: 'rgba(201,148,58,0.25)', border: '1px solid rgba(201,148,58,0.5)', color: '#E8BC6A' }}>
-                Aluth Avurudu 2026
+                Suurya Mangalya'26
               </div>
               <h1 className="font-yatra text-2xl md:text-[2.2rem] leading-tight" style={{ color: '#E8BC6A' }}>
                 Awurudu 2026

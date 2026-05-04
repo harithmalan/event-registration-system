@@ -140,18 +140,7 @@ function NavTab({
   return (
     <Link
       href={href}
-      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[0.82rem] font-medium transition-all duration-200"
-      style={{
-        color: 'rgba(245,228,184,0.75)',
-      }}
-      onMouseEnter={(e) => {
-        (e.currentTarget as HTMLAnchorElement).style.background = 'rgba(201,148,58,0.18)'
-        ;(e.currentTarget as HTMLAnchorElement).style.color = '#E8BC6A'
-      }}
-      onMouseLeave={(e) => {
-        (e.currentTarget as HTMLAnchorElement).style.background = 'transparent'
-        ;(e.currentTarget as HTMLAnchorElement).style.color = 'rgba(245,228,184,0.75)'
-      }}
+      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[0.82rem] font-medium transition-all duration-200 text-[rgba(245,228,184,0.75)] hover:text-[#E8BC6A] hover:bg-[rgba(201,148,58,0.18)]"
     >
       {icon}
       {label}

@@ -1,8 +1,13 @@
-import { Resend } from 'resend'
+import nodemailer from 'nodemailer'
 import { NextResponse } from 'next/server'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
-
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_APP_PASSWORD,
+  }
+})
 export async function POST(req: Request) {
   try {
     const { studentEmail, studentName, reason } = await req.json()
@@ -13,8 +18,8 @@ export async function POST(req: Request) {
 <tr><td align="center" style="padding:24px 0">
 <table width="560" style="background:#fff;border-radius:16px;overflow:hidden;border:1px solid #EEE2C8">
   <tr><td style="background:#4E1219;padding:24px;text-align:center">
-    <h1 style="color:#E8BC6A;font-size:22px;margin:0">Awurudu 2026</h1>
-    <p style="color:#F5E4B8;font-size:12px;margin:4px 0 0">SLIIT City University</p>
+    <h1 style="color:#E8BC6A;font-size:22px;margin:0">Suurya Mangalya</h1>
+    <p style="color:#F5E4B8;font-size:12px;margin:4px 0 0">SCUy</p>
   </td></tr>
   <tr><td style="padding:32px;background:#FAF3E0">
     <p style="color:#2B1A0E">Dear <strong>${studentName}</strong>,</p>
@@ -24,19 +29,20 @@ export async function POST(req: Request) {
     <p style="color:#5C3D2E">Harith: +94 768 570 754 &nbsp;|&nbsp; Minol: +94 765 373 271 &nbsp;|&nbsp; Alex: +94 706 544 700</p>
   </td></tr>
   <tr><td style="background:#4E1219;padding:14px;text-align:center">
-    <p style="color:#F5E4B8;font-size:11px;margin:0">SLIIT City University Awurudu 2026</p>
+    <p style="color:#F5E4B8;font-size:11px;margin:0">SCU Awurudu 2026</p>
   </td></tr>
 </table>
 </td></tr>
 </table>
 </body></html>`
 
-    await resend.emails.send({
-      from: 'Awurudu 2026 <onboarding@resend.dev>',
+   await transporter.sendMail({
+      from: `"Awurudu 2026" <${process.env.GMAIL_USER}>`,
       to: studentEmail,
       subject: 'Receipt update — Awurudu 2026 registration',
       html,
     })
+
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('Send reject error:', error)

@@ -2,6 +2,8 @@ import { createServerClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import AdminClient from './AdminClient'
+import { supabaseAdmin } from '@/lib/supabase-server'
+
 
 interface RegistrationRow {
   id: string
@@ -38,23 +40,55 @@ export default async function AdminPage() {
   const { data: { session } } = await supabase.auth.getSession()
   if (!session) redirect('/login')
 
-  const { data: adminProfile } = await supabase
-    .from('profiles').select('is_admin').eq('id', session.user.id).single()
+const { data: adminProfile } = await supabaseAdmin
+  .from('profiles').select('is_admin').eq('id', session.user.id).single()
   if (!adminProfile?.is_admin) redirect('/dashboard')
 
-  const { data: registrations } = await supabase
-    .from('registrations')
-    .select('*, profiles(full_name, student_number, email, avatar_initial)')
-    .order('uploaded_at', { ascending: false })
+  // Test 1 — fetch registrations with no join
+const { data: registrations } = await supabaseAdmin
+  .from('registrations')
+  .select('*')
+  .order('uploaded_at', { ascending: false })
+const { data: profiles } = await supabaseAdmin
+  .from('profiles')
+  .select('id, full_name, student_number, email, avatar_initial')
+console.log('REGISTRATIONS:', JSON.stringify(registrations, null, 2))
+console.log('ERROR:', JSON.stringify(Error, Object.getOwnPropertyNames(Error ?? {})))
+const rows = await Promise.all(
+  (registrations ?? []).map(async (row) => {
+    const profile = (profiles ?? []).find(p => p.id === row.user_id) ?? null
 
-  const rows = (registrations ?? []) as RegistrationRow[]
+    // Generate signed URL for receipt
+    let receiptUrl = row.receipt_url
+    if (receiptUrl) {
+      const path = receiptUrl.split('/receipts/')[1]
+      if (path) {
+        const { data: signed } = await supabaseAdmin.storage
+          .from('receipts')
+          .createSignedUrl(path, 60 * 60)
+        receiptUrl = signed?.signedUrl ?? receiptUrl
+      }
+    }
 
-  const stats = {
-    total: rows.length,
-    pending: rows.filter(r => r.receipt_status === 'pending').length,
-    approved: rows.filter(r => r.receipt_status === 'approved').length,
-    rejected: rows.filter(r => r.receipt_status === 'rejected').length,
-  }
+    return {
+      ...row,
+      receipt_url: receiptUrl,
+      profiles: profile ? {
+        full_name: profile.full_name,
+        student_number: profile.student_number,
+        email: profile.email,
+        avatar_initial: profile.avatar_initial,
+      } : null
+    }
+  })
+) as RegistrationRow[]
 
-  return <AdminClient initialData={rows} stats={stats} />
+const stats = {
+  total: rows.length,
+  pending: rows.filter(r => r.receipt_status === 'pending').length,
+  approved: rows.filter(r => r.receipt_status === 'approved').length,
+  rejected: rows.filter(r => r.receipt_status === 'rejected').length,
+}
+
+return <AdminClient initialData={rows} stats={stats} />
 }
