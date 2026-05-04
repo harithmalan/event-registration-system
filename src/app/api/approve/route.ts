@@ -40,15 +40,20 @@ export async function POST(req: Request) {
 
   if (updateError) return NextResponse.json({ error: updateError.message }, { status: 500 })
 
-  const emailRes = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/send-invite`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ studentEmail, studentName, qrToken }),
-  })
+  try {
+    const origin = new URL(req.url).origin
+    const emailRes = await fetch(`${origin}/api/send-invite`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ studentEmail, studentName, qrToken }),
+    })
 
-  if (emailRes.ok) {
-    await supabaseAdmin.from('registrations')
-      .update({ email_sent: true }).eq('id', registrationId)
+    if (emailRes.ok) {
+      await supabaseAdmin.from('registrations')
+        .update({ email_sent: true }).eq('id', registrationId)
+    }
+  } catch (err) {
+    console.error('Failed to send invite email:', err)
   }
 
   return NextResponse.json({ success: true, qrToken })

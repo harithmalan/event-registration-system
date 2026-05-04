@@ -39,11 +39,16 @@ export async function POST(req: Request) {
 
   if (updateError) return NextResponse.json({ error: updateError.message }, { status: 500 })
 
-  await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/send-reject`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ studentEmail, studentName, reason }),
-  })
+  try {
+    const origin = new URL(req.url).origin
+    await fetch(`${origin}/api/send-reject`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ studentEmail, studentName, reason }),
+    })
+  } catch (err) {
+    console.error('Failed to send reject email:', err)
+  }
 
   return NextResponse.json({ success: true })
 }

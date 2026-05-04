@@ -11,7 +11,10 @@ const transporter = nodemailer.createTransport({
 
 export async function POST(req: Request) {
   const { studentEmail, studentName, qrToken } = await req.json()
-  const qrUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/verify/${qrToken}`
+  
+  // Dynamically get the base URL from the request itself, so it works perfectly on Vercel without env vars
+  const origin = new URL(req.url).origin
+  const qrUrl = `${origin}/verify/${qrToken}`
   const qrImgUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(qrUrl)}`
 
   try {

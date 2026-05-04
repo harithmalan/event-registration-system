@@ -445,7 +445,7 @@ export default function DashboardPage() {
                 <div className="flex flex-col items-center">
                   <div className="mb-4 rounded-2xl border-2 border-[#C9943A] bg-white p-3 shadow-lg">
                     <QRCode
-                      value={`${BASE_URL}/verify/${registration.qr_token}`}
+                      value={`${typeof window !== 'undefined' ? window.location.origin : 'https://scu-awurudu-2026.vercel.app'}/verify/${registration.qr_token}`}
                       size={200}
                       level="H"
                     />
