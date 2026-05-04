@@ -7,7 +7,7 @@ import QRCode from 'react-qr-code'
 import {
   Calendar, MapPin, Clock, Music2,
   CloudUpload, FileText, MessageCircle, AlertTriangle, X,
-  ClipboardList, ScanLine, ChevronRight, Trophy
+  ClipboardList, ScanLine, ChevronRight, Trophy, Ticket
 } from 'lucide-react'
 import { createBrowserClient } from '@/lib/supabase-browser'
 import { formatDate } from '@/lib/utils'
@@ -239,6 +239,7 @@ export default function DashboardPage() {
                 { icon: <Calendar size={14} />, label: 'Date', value: '8th May 2026' },
                 { icon: <MapPin size={14} />, label: 'Venue', value: 'BMICH Hidden Escape, Colombo' },
                 { icon: <Clock size={14} />, label: 'Time', value: '9:00 AM onwards' },
+                { icon: <Ticket size={14} />, label: 'Ticket Price', value: 'LKR 850' },
                 { icon: <Music2 size={14} />, label: 'After Party', value: 'DJ After Party' },
               ].map(({ icon, label, value }) => (
                 <div key={label} className="flex items-center gap-2">
@@ -322,6 +323,10 @@ export default function DashboardPage() {
           <div className="space-y-5">
             <div className="festival-card-hover rounded-2xl border border-[rgba(201,148,58,0.12)] bg-white p-5 shadow-[0_4px_24px_rgba(122,31,40,0.08)]">
               <h2 className="mb-3 text-[0.72rem] font-bold uppercase tracking-widest text-[#9C7D5A]">Registration Status</h2>
+              <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-[#FAF3E0] px-3 py-1 text-xs font-semibold text-[#7A1F28]">
+                <Ticket size={13} className="text-[#C9943A]" />
+                Ticket Price: LKR 850
+              </div>
               <div className={`mb-3 flex items-center gap-3 ${status === 'approved' ? 'festival-confetti' : ''}`}>
                 <StatusBadge status={status} />
                 {registration?.uploaded_at && (
@@ -370,6 +375,7 @@ export default function DashboardPage() {
             {showUpload && (
               <div className="festival-card-hover rounded-2xl border border-[rgba(201,148,58,0.12)] bg-white p-5 shadow-[0_4px_24px_rgba(122,31,40,0.08)]">
                 <h2 className="mb-3 text-[0.72rem] font-bold uppercase tracking-widest text-[#9C7D5A]">Payment Receipt</h2>
+                <p className="mb-3 text-sm text-[#7A1F28]">Ticket Price: <span className="font-semibold">LKR 850</span></p>
 
                 <input
                   ref={fileInputRef}
@@ -446,6 +452,7 @@ export default function DashboardPage() {
                   </div>
                   <p className="text-base font-semibold text-[#2B1A0E]">{profile?.full_name}</p>
                   <p className="text-sm text-[#9C7D5A]">{profile?.student_number}</p>
+                  <p className="mt-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#7A1F28]">Ticket Price: LKR 850</p>
                   <div className="mt-3 flex items-start gap-2 rounded-xl px-3 py-2 text-xs" style={{ background: 'rgba(139,105,20,0.1)', border: '1px solid rgba(139,105,20,0.25)', color: '#8B6914' }}>
                     <AlertTriangle size={13} className="mt-0.5 flex-shrink-0" />
                     Single use only - do not share this QR code

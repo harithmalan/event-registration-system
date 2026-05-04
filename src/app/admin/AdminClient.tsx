@@ -142,6 +142,7 @@ export default function AdminClient({
   const [rejectModalId, setRejectModalId] = useState<string | null>(null)
   const [rejectReason, setRejectReason] = useState('')
   const [receiptModal, setReceiptModal] = useState<string | null>(null)
+  const [gamePhotoModal, setGamePhotoModal] = useState<{ url: string; name: string } | null>(null)
   const [activeSection, setActiveSection] = useState<'registrations' | 'games'>('registrations')
   const [rejectAnimating, setRejectAnimating] = useState(false)
 
@@ -684,8 +685,17 @@ export default function AdminClient({
                       <td className="px-3 py-3 text-sm text-[#5C3D2E]">{row.batch}</td>
                       <td className="px-3 py-3">
                         {row.photo_preview_url ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img src={row.photo_preview_url} alt={row.full_name} className="h-12 w-12 rounded-xl border border-[#EEE2C8] object-cover" />
+                          <button
+                            onClick={() => setGamePhotoModal({ url: row.photo_preview_url!, name: row.full_name })}
+                            className="group relative overflow-hidden rounded-xl border border-[#EEE2C8] transition-all duration-200 hover:border-[#C9943A] active:scale-95"
+                            title="View participant photo"
+                          >
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src={row.photo_preview_url} alt={row.full_name} className="h-12 w-12 object-cover" />
+                            <span className="absolute inset-0 flex items-center justify-center bg-[#4E1219]/45 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                              <Eye size={14} className="text-white" />
+                            </span>
+                          </button>
                         ) : (
                           <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-dashed border-[#EEE2C8] bg-[#FAF3E0] text-xs text-[#9C7D5A]">N/A</div>
                         )}
@@ -846,6 +856,23 @@ export default function AdminClient({
               // eslint-disable-next-line @next/next/no-img-element
               <img src={receiptModal} alt="Payment receipt" className="max-h-[60vh] w-full rounded-xl border-2 border-[#EEE2C8] object-contain" />
             )}
+          </div>
+        </div>
+      )}
+
+      {gamePhotoModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(30,10,5,0.65)', backdropFilter: 'blur(4px)' }}>
+          <div className="relative w-full max-w-xl rounded-2xl border border-[#EEE2C8] bg-white p-5 shadow-2xl">
+            <div className="absolute left-0 right-0 top-0 h-1 rounded-t-2xl" style={{ background: 'linear-gradient(90deg, #7A1F28, #C9943A, #7A1F28)' }} />
+            <div className="mb-4 flex items-center justify-between">
+              <div>
+                <h2 className="font-yatra text-xl text-[#7A1F28]">Participant Photo</h2>
+                <p className="text-sm text-[#9C7D5A]">{gamePhotoModal.name}</p>
+              </div>
+              <button onClick={() => setGamePhotoModal(null)} className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#FAF3E0] transition-all duration-200 hover:bg-[#EEE2C8] active:scale-95"><X size={16} className="text-[#9C7D5A]" /></button>
+            </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={gamePhotoModal.url} alt={gamePhotoModal.name} className="max-h-[70vh] w-full rounded-xl border-2 border-[#EEE2C8] object-contain" />
           </div>
         </div>
       )}
