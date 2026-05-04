@@ -34,6 +34,7 @@ interface Registration {
   rejection_reason: string | null
   qr_token: string | null
   qr_used: boolean
+  qr_used_at: string | null
   uploaded_at: string | null
 }
 
@@ -329,6 +330,11 @@ export default function DashboardPage() {
               </div>
               <div className={`mb-3 flex items-center gap-3 ${status === 'approved' ? 'festival-confetti' : ''}`}>
                 <StatusBadge status={status} />
+                {registration?.qr_used && (
+                  <span className="inline-flex items-center gap-1 rounded-full border border-[#8B6914]/25 bg-[#8B6914]/10 px-3 py-1.5 text-xs font-semibold text-[#8B6914]">
+                    QR Already Used
+                  </span>
+                )}
                 {registration?.uploaded_at && (
                   <span className="text-xs text-[#9C7D5A]">Uploaded {formatDate(registration.uploaded_at)}</span>
                 )}
@@ -340,7 +346,21 @@ export default function DashboardPage() {
                 <p className="text-sm text-[#5C3D2E]">Your payment receipt has been submitted and is awaiting admin approval. You will receive an email with your QR code once approved.</p>
               )}
               {status === 'approved' && (
-                <p className="text-sm font-medium text-[#2D7A3A]">Your registration is approved. Your entry QR code is ready below.</p>
+                <div className="space-y-1">
+                  <p className={`text-sm font-medium ${registration?.qr_used ? 'text-[#8B6914]' : 'text-[#2D7A3A]'}`}>
+                    {registration?.qr_used
+                      ? 'Your QR code has already been scanned at the gate.'
+                      : 'Your registration is approved. Your entry QR code is ready below.'}
+                  </p>
+                  {registration?.qr_used_at && (
+                    <p className="text-xs text-[#9C7D5A]">
+                      Used at {new Date(registration.qr_used_at).toLocaleString('en-LK', {
+                        dateStyle: 'medium',
+                        timeStyle: 'short',
+                      })}
+                    </p>
+                  )}
+                </div>
               )}
               {status === 'rejected' && (
                 <div>
@@ -443,12 +463,27 @@ export default function DashboardPage() {
               <div id="my-ticket" className="festival-card-hover rounded-2xl border-2 border-[#C9943A] bg-white p-5 shadow-[0_4px_24px_rgba(122,31,40,0.08)]">
                 <h2 className="mb-4 text-center text-[0.72rem] font-bold uppercase tracking-widest text-[#9C7D5A]">Your Entry Pass</h2>
                 <div className="flex flex-col items-center">
-                  <div className="mb-4 rounded-2xl border-2 border-[#C9943A] bg-white p-3 shadow-lg">
+                  <div className="relative mb-4 rounded-2xl border-2 border-[#C9943A] bg-white p-3 shadow-lg">
                     <QRCode
                       value={`${typeof window !== 'undefined' ? window.location.origin : 'https://scu-awurudu-2026.vercel.app'}/verify/${registration.qr_token}`}
                       size={200}
                       level="H"
                     />
+                    {registration.qr_used && (
+                      <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-[rgba(78,18,25,0.72)] p-4 text-center">
+                        <div>
+                          <p className="font-yatra text-2xl text-[#F5E4B8]">Used</p>
+                          {registration.qr_used_at && (
+                            <p className="mt-1 text-xs text-[#F5E4B8]/80">
+                              {new Date(registration.qr_used_at).toLocaleString('en-LK', {
+                                dateStyle: 'medium',
+                                timeStyle: 'short',
+                              })}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
                   <p className="text-base font-semibold text-[#2B1A0E]">{profile?.full_name}</p>
                   <p className="text-sm text-[#9C7D5A]">{profile?.student_number}</p>

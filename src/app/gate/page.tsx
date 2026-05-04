@@ -23,6 +23,11 @@ type Html5QrcodeInstance = {
   isScanning?: boolean
 }
 
+interface CameraDevice {
+  id: string
+  label: string
+}
+
 const SCANNER_ELEMENT_ID = 'qr-reader'
 
 function extractToken(decodedText: string) {
@@ -51,6 +56,8 @@ export default function GatePage() {
   const [starting, setStarting] = useState(true)
   const [scannerStarted, setScannerStarted] = useState(false)
   const [cameraError, setCameraError] = useState('')
+  const [availableCameras, setAvailableCameras] = useState<CameraDevice[]>([])
+  const [selectedCameraId, setSelectedCameraId] = useState('')
 
   const stopScanner = useCallback(async () => {
     if (!scannerRef.current) return
@@ -88,40 +95,79 @@ export default function GatePage() {
       const { Html5Qrcode } = await import('html5-qrcode')
       if (!mountedRef.current) return
 
+      const rawCameras = await Html5Qrcode.getCameras().catch(() => [])
+      const cameras: CameraDevice[] = (rawCameras ?? []).map((camera: { id?: string; deviceId?: string; label?: string }) => ({
+        id: camera.id || camera.deviceId || '',
+        label: camera.label || 'Camera',
+      })).filter((camera) => camera.id)
+
+      if (mountedRef.current) {
+        setAvailableCameras(cameras)
+      }
+
+      const preferredBackCamera = cameras.find((camera) => /back|rear|environment/i.test(camera.label))
+      const fallbackCamera = cameras[0]
+      const cameraToUse = selectedCameraId || preferredBackCamera?.id || fallbackCamera?.id
+
       const scanner = new Html5Qrcode(SCANNER_ELEMENT_ID) as unknown as Html5QrcodeInstance
       scannerRef.current = scanner
 
-      await scanner.start(
-        { facingMode: 'environment' },
-        { fps: 10, qrbox: { width: 240, height: 240 }, aspectRatio: 1 },
-        async (decodedText: string) => {
-          const token = extractToken(decodedText)
-          if (!token) return
+      const scanSuccess = async (decodedText: string) => {
+        const token = extractToken(decodedText)
+        if (!token) return
 
-          await stopScanner()
+        await stopScanner()
 
-          const response = await fetch('/api/scan-qr', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ token }),
-          })
+        const response = await fetch('/api/scan-qr', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token }),
+        })
 
-          const data: ScanResult = await response.json()
+        const data: ScanResult = await response.json()
+        if (!mountedRef.current) return
+
+        setResult(data)
+        setScanCount((prev) => prev + 1)
+
+        resumeTimeoutRef.current = setTimeout(() => {
           if (!mountedRef.current) return
+          setResult(null)
+          startScanner()
+        }, 4000)
+      }
 
-          setResult(data)
-          setScanCount((prev) => prev + 1)
+      const scanError = () => {
+        // Ignore noisy per-frame scan errors.
+      }
 
-          resumeTimeoutRef.current = setTimeout(() => {
-            if (!mountedRef.current) return
-            setResult(null)
-            startScanner()
-          }, 4000)
-        },
-        () => {
-          // Ignore noisy per-frame scan errors.
+      let started = false
+
+      if (cameraToUse) {
+        try {
+          await scanner.start(
+            cameraToUse,
+            { fps: 10, qrbox: { width: 240, height: 240 }, aspectRatio: 1 },
+            scanSuccess,
+            scanError
+          )
+          started = true
+          if (mountedRef.current) {
+            setSelectedCameraId(cameraToUse)
+          }
+        } catch (deviceStartError) {
+          console.warn('Starting selected camera failed, falling back to facingMode:', deviceStartError)
         }
-      )
+      }
+
+      if (!started) {
+        await scanner.start(
+          { facingMode: 'environment' },
+          { fps: 10, qrbox: { width: 240, height: 240 }, aspectRatio: 1 },
+          scanSuccess,
+          scanError
+        )
+      }
 
       if (!mountedRef.current) return
       setScannerStarted(true)
@@ -134,7 +180,7 @@ export default function GatePage() {
         setStarting(false)
       }
     }
-  }, [stopScanner])
+  }, [selectedCameraId, stopScanner])
 
   useEffect(() => {
     mountedRef.current = true
@@ -177,6 +223,31 @@ export default function GatePage() {
               )}
               <div id={SCANNER_ELEMENT_ID} className={starting ? 'hidden' : 'w-full'} />
             </div>
+            {!starting && availableCameras.length > 1 && (
+              <div className="flex flex-col gap-2 border-t border-[#C9943A]/25 bg-[#1A120E] p-3 sm:flex-row sm:items-center sm:justify-between">
+                <label className="text-xs font-semibold uppercase tracking-[0.18em] text-[#F5E4B8]/80">
+                  Active Camera
+                </label>
+                <select
+                  value={selectedCameraId}
+                  onChange={(e) => {
+                    setSelectedCameraId(e.target.value)
+                    setResult(null)
+                    setCameraError('')
+                    setTimeout(() => {
+                      startScanner()
+                    }, 0)
+                  }}
+                  className="rounded-xl border border-[#C9943A]/30 bg-[#FAF3E0] px-3 py-2 text-sm text-[#2B1A0E] outline-none focus:border-[#C9943A]"
+                >
+                  {availableCameras.map((camera) => (
+                    <option key={camera.id} value={camera.id}>
+                      {camera.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
           </div>
         )}
 
@@ -249,6 +320,29 @@ export default function GatePage() {
           </div>
         </div>
       </div>
+      <style jsx global>{`
+        #${SCANNER_ELEMENT_ID} {
+          width: 100% !important;
+          min-height: 320px;
+          background: #000;
+        }
+
+        #${SCANNER_ELEMENT_ID} video {
+          display: block !important;
+          width: 100% !important;
+          height: 320px !important;
+          object-fit: cover !important;
+          background: #000 !important;
+        }
+
+        #${SCANNER_ELEMENT_ID} canvas {
+          display: none !important;
+        }
+
+        #${SCANNER_ELEMENT_ID} img {
+          display: none !important;
+        }
+      `}</style>
     </div>
   )
 }
