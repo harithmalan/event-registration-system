@@ -219,7 +219,7 @@ if (registration) {
                 Awurudu 2026
               </h1>
               <p className="text-sm mt-1" style={{ color: 'rgba(245,228,184,0.8)' }}>
-                SLIIT City University — Aluth Avurudu Celebration
+                SCU — Aluth Avurudu Celebration
               </p>
             </div>
           </div>

@@ -83,7 +83,7 @@ export default async function VerifyPage({ params }: Props) {
               <Image src="/logo.png" alt="Awurudu 2026" fill className="object-cover" />
             </div>
             <h1 className="font-yatra text-xl text-[#E8BC6A]">Awurudu 2026</h1>
-            <p className="text-xs mt-1" style={{ color: 'rgba(245,228,184,0.7)' }}>SLIIT City University — Entry Pass</p>
+            <p className="text-xs mt-1" style={{ color: 'rgba(245,228,184,0.7)' }}>SCU — Entry Pass</p>
           </div>
 
           {/* Valid badge */}

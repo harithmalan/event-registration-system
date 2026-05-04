@@ -26,7 +26,7 @@ export async function POST(req: Request) {
 <table width="560" cellpadding="0" cellspacing="0" style="background:#fff;border-radius:16px;overflow:hidden;border:1px solid #EEE2C8">
   <tr><td style="background:linear-gradient(135deg,#4E1219,#7A1F28);padding:28px;text-align:center">
     <h1 style="color:#E8BC6A;font-size:24px;margin:0">Awurudu 2026</h1>
-    <p style="color:#F5E4B8;font-size:13px;margin:6px 0 0">SLIIT City University — Aluth Avurudu Celebration</p>
+    <p style="color:#F5E4B8;font-size:13px;margin:6px 0 0">SCU — Aluth Avurudu Celebration</p>
   </td></tr>
   <tr><td style="padding:32px;background:#FAF3E0">
     <p style="color:#2B1A0E">Dear <strong>${studentName}</strong>,</p>

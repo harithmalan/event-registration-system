@@ -70,7 +70,7 @@ export default async function Navbar() {
             Awurudu&apos;26
           </div>
           <div className="text-[0.65rem] leading-tight" style={{ color: 'rgba(245,228,184,0.55)' }}>
-            SLIIT City University
+            SCU
           </div>
         </div>
       </Link>
