@@ -6,11 +6,18 @@ export async function POST(req: Request) {
     const { token } = await req.json()
     if (!token) return NextResponse.json({ valid: false, message: 'No token provided' })
 
-    const { data: reg } = await supabaseAdmin
+    const normalizedToken = String(token).trim().replace(/\/$/, '').split('/verify/').pop()
+    if (!normalizedToken) return NextResponse.json({ valid: false, message: 'No token provided' })
+
+    const { data: reg, error } = await supabaseAdmin
       .from('registrations')
-      .select('id, qr_used, qr_used_at, profiles(full_name, student_number)')
-      .eq('qr_token', token)
-      .single()
+      .select('id, qr_used, qr_used_at, profiles:profiles!registrations_user_id_fkey(full_name, student_number)')
+      .eq('qr_token', normalizedToken)
+      .maybeSingle()
+
+    if (error) {
+      console.error('QR scan lookup failed:', error)
+    }
 
     if (!reg) return NextResponse.json({ valid: false, message: 'Invalid QR code' })
     if (reg.qr_used) return NextResponse.json({

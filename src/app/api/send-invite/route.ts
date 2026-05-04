@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer'
 import { NextResponse } from 'next/server'
+import { resolveRequestOrigin } from '@/lib/request-origin'
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -11,10 +12,7 @@ const transporter = nodemailer.createTransport({
 
 export async function POST(req: Request) {
   const { studentEmail, studentName, qrToken } = await req.json()
-  
-  const protocol = req.headers.get('x-forwarded-proto') || 'https'
-  const host = req.headers.get('x-forwarded-host') || req.headers.get('host')
-  const origin = process.env.NEXT_PUBLIC_BASE_URL || `${protocol}://${host}`
+  const origin = resolveRequestOrigin(req)
   const qrUrl = `${origin}/verify/${qrToken}`
   const qrImgUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(qrUrl)}`
 

@@ -1,4 +1,5 @@
 import { supabaseAdmin } from '@/lib/supabase-server'
+import { resolveRequestOrigin } from '@/lib/request-origin'
 import { createServerClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
@@ -40,9 +41,7 @@ export async function POST(req: Request) {
   if (updateError) return NextResponse.json({ error: updateError.message }, { status: 500 })
 
   try {
-    const protocol = req.headers.get('x-forwarded-proto') || 'https'
-    const host = req.headers.get('x-forwarded-host') || req.headers.get('host')
-    const origin = process.env.NEXT_PUBLIC_BASE_URL || `${protocol}://${host}`
+    const origin = resolveRequestOrigin(req)
     await fetch(`${origin}/api/send-reject`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
