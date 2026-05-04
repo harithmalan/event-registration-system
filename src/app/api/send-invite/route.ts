@@ -18,7 +18,7 @@ export async function POST(req: Request) {
     await transporter.sendMail({
       from: `"Awurudu 2026" <${process.env.GMAIL_USER}>`,
       to: studentEmail,
-      subject: 'You are invited — Suurya Mangalya at BMICH Kamatha',
+      subject: 'You are invited — Suurya Mangalya at BMICH Hidden Escape',
       html: `<!DOCTYPE html>
 <html><body style="margin:0;font-family:sans-serif;background:#FAF3E0">
 <table width="100%" cellpadding="0" cellspacing="0">
@@ -40,7 +40,7 @@ export async function POST(req: Request) {
       <tr><td style="padding:8px 0;color:#5C3D2E;font-weight:bold;width:120px">Date</td>
           <td style="color:#2B1A0E">8th May 2026</td></tr>
       <tr><td style="padding:8px 0;color:#5C3D2E;font-weight:bold">Venue</td>
-          <td style="color:#2B1A0E">BMICH Kamatha, Colombo</td></tr>
+          <td style="color:#2B1A0E">BMICH Hidden Escape, Colombo</td></tr>
       <tr><td style="padding:8px 0;color:#5C3D2E;font-weight:bold">Time</td>
           <td style="color:#2B1A0E">9:00 AM onwards</td></tr>
     </table>

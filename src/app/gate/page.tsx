@@ -79,7 +79,7 @@ export default function GatePage() {
         {/* Header */}
         <div className="text-center mb-4">
           <h1 className="font-yatra text-2xl text-[#7A1F28]">Gate Entry</h1>
-          <p className="text-sm text-[#9C7D5A]">Awurudu 2026 — BMICH Kamatha</p>
+          <p className="text-sm text-[#9C7D5A]">Awurudu 2026 — BMICH Hidden Escape</p>
         </div>
 
         {/* Scan count */}

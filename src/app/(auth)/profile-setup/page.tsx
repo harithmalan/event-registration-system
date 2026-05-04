@@ -174,7 +174,7 @@ export default function ProfileSetupPage() {
                 type="text"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                placeholder="e.g. M.H. Malan"
+                placeholder="e.g. Jhon Doe"
                 className="flex-1 bg-transparent outline-none text-sm text-[#2B1A0E] placeholder:text-[#C4A882]"
               />
             </div>
@@ -196,7 +196,7 @@ export default function ProfileSetupPage() {
                 type="text"
                 value={studentNumber}
                 onChange={(e) => setStudentNumber(e.target.value)}
-                placeholder="e.g. SA24610077"
+                placeholder="e.g. SAXXXXXXXX"
                 className="flex-1 bg-transparent outline-none text-sm text-[#2B1A0E] placeholder:text-[#C4A882] uppercase"
               />
             </div>

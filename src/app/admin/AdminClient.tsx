@@ -140,7 +140,7 @@ export default function AdminClient({ initialData, stats }: { initialData: Regis
       {/* Header */}
       <div className="mb-5">
         <h1 className="font-yatra text-2xl text-[#7A1F28]">Admin Panel</h1>
-        <p className="text-sm text-[#9C7D5A]">Manage registrations for Awurudu 2026 — BMICH Kamatha, 8th May 2026</p>
+        <p className="text-sm text-[#9C7D5A]">Manage registrations for Awurudu 2026 — BMICH Hidden Escape, 8th May 2026</p>
       </div>
 
       {/* Stats row */}

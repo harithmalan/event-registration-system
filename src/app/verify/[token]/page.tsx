@@ -105,7 +105,7 @@ export default async function VerifyPage({ params }: Props) {
             <div className="space-y-3 border-t border-[#EEE2C8] pt-4">
               {[
                 { icon: <Calendar size={14} />, label: 'Date', value: '8th May 2026' },
-                { icon: <MapPin size={14} />, label: 'Venue', value: 'BMICH Kamatha, Colombo' },
+                { icon: <MapPin size={14} />, label: 'Venue', value: 'BMICH Hidden Escape, Colombo' },
                 { icon: <Clock size={14} />, label: 'Time', value: '9:00 AM onwards' },
               ].map(({ icon, label, value }) => (
                 <div key={label} className="flex items-center gap-3">

@@ -89,7 +89,7 @@ export default function LoginPage() {
               <label className="block text-[0.75rem] font-semibold text-[#5C3D2E] mb-1.5 uppercase tracking-wider">Email Address</label>
               <div className="relative">
                 <Mail size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9C7D5A]" />
-                <input id="login-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@sliit.lk" required className={inputClass} />
+                <input id="login-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@gmail.com" required className={inputClass} />
               </div>
             </div>
             <div>

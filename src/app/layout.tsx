@@ -18,10 +18,10 @@ const dmSans = DM_Sans({
 
 export const metadata: Metadata = {
   title: "Awurudu 2026 — SCU",
-  description: "Register for the SCU Sri Lankan New Year (Awurudu) celebration on 8th May 2026 at BMICH Kamatha, Colombo.",
+  description: "Register for the SCU Sri Lankan New Year (Awurudu) celebration on 8th May 2026 at BMICH Hidden Escape, Colombo.",
   openGraph: {
     title: "Awurudu 2026 — SCU",
-    description: "Sri Lankan New Year Celebration — 8th May 2026, BMICH Kamatha, Colombo",
+    description: "Sri Lankan New Year Celebration — 8th May 2026, BMICH Hidden Escape, Colombo",
     type: "website",
   },
 }

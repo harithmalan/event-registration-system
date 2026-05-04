@@ -229,7 +229,7 @@ if (registration) {
           <div className="flex flex-wrap gap-4 mt-5">
             {[
               { icon: <Calendar size={14} />, label: 'Date', value: '8th May 2026' },
-              { icon: <MapPin size={14} />, label: 'Venue', value: 'BMICH Kamatha, Colombo' },
+              { icon: <MapPin size={14} />, label: 'Venue', value: 'BMICH Hidden Escape, Colombo' },
               { icon: <Clock size={14} />, label: 'Time', value: '9:00 AM onwards' },
               { icon: <Music2 size={14} />, label: 'After Party', value: 'DJ After Party' },
             ].map(({ icon, label, value }) => (
@@ -431,7 +431,7 @@ if (registration) {
                   <AlertTriangle size={13} className="flex-shrink-0 mt-0.5" />
                   Single use only — do not share this QR code
                 </div>
-                <p className="mt-2 text-xs text-[#9C7D5A] text-center">Event: 8th May 2026 — BMICH Kamatha</p>
+                <p className="mt-2 text-xs text-[#9C7D5A] text-center">Event: 8th May 2026 — BMICH Hidden Escape</p>
               </div>
             </div>
           )}
