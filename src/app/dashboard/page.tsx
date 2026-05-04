@@ -546,6 +546,22 @@ export default function DashboardPage() {
                 ))}
               </div>
             </div>
+
+            <div className="festival-card-hover relative overflow-hidden rounded-2xl border border-[rgba(201,148,58,0.18)] bg-white p-5 shadow-[0_4px_24px_rgba(122,31,40,0.08)]">
+              <div className="absolute inset-0 opacity-60" style={{ background: 'radial-gradient(circle at top, rgba(201,148,58,0.12), transparent 62%)' }} />
+              <div className="relative z-10 flex flex-col items-center text-center">
+                <p className="text-[0.72rem] font-bold uppercase tracking-widest text-[#9C7D5A]">Festival Crest</p>
+                <div className="festival-crest-glow mt-5">
+                  <div className="festival-crest-drift rounded-full p-2 transition-all duration-300 hover:rotate-3 hover:scale-[1.04]">
+                    <div className="relative h-32 w-32 overflow-hidden rounded-full border-[3px] border-[#E8BC6A] bg-[#FAF3E0] shadow-[0_16px_40px_rgba(122,31,40,0.16)]">
+                      <Image src="/logo.png" alt="Awurudu 2026 crest" fill className="object-cover" />
+                    </div>
+                  </div>
+                </div>
+                <p className="mt-5 font-yatra text-xl text-[#7A1F28]">Suurya Mangalya</p>
+                <p className="mt-1 text-sm text-[#9C7D5A]">A little Awurudu glow for the journey to the gate.</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -36,7 +36,12 @@ export default function RootLayout({
       <body className="font-sans antialiased">
         <div className="rangoli-border" />
         <Navbar />
-        {children}
+        <div className="min-h-[calc(100vh-70px)]">
+          {children}
+        </div>
+        <footer className="border-t border-[#E8D7B4] bg-[rgba(250,243,224,0.92)] px-4 py-3 text-center">
+          <p className="text-[11px] tracking-[0.16em] text-[#9C7D5A] uppercase">Developed by Harith</p>
+        </footer>
       </body>
     </html>
   )
