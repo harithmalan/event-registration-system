@@ -2,7 +2,7 @@ import { createServerClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Ticket } from 'lucide-react'
+import { CalendarDays, Ticket, Trophy } from 'lucide-react'
 import AvatarCircle from '@/components/ui/AvatarCircle'
 import SignOutButton from '@/components/SignOutButton'
 
@@ -78,9 +78,9 @@ export default async function Navbar() {
       {/* Nav Tabs — shown when logged in */}
       {session && (
         <div className="hidden md:flex items-center gap-1">
-          {!isAdmin && (
-            <NavTab href="/dashboard#my-ticket" icon={<Ticket size={14} />} label="My Ticket" />
-          )}
+          <NavTab href="/dashboard#event-info" icon={<CalendarDays size={14} />} label="Event Info" />
+          <NavTab href="/games" icon={<Trophy size={14} />} label="Games" />
+          {!isAdmin && <NavTab href="/dashboard#my-ticket" icon={<Ticket size={14} />} label="My Ticket" />}
         </div>
       )}
 
@@ -132,7 +132,7 @@ function NavTab({
   return (
     <Link
       href={href}
-      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[0.82rem] font-medium transition-all duration-200 text-[rgba(245,228,184,0.75)] hover:text-[#E8BC6A] hover:bg-[rgba(201,148,58,0.18)]"
+      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[0.82rem] font-medium transition-all duration-200 active:scale-95 text-[rgba(245,228,184,0.75)] hover:text-[#E8BC6A] hover:bg-[rgba(201,148,58,0.18)]"
     >
       {icon}
       {label}

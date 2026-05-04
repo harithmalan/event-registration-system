@@ -32,7 +32,7 @@ export default function CountdownTimer() {
       {units.map(({ label, value }) => (
         <div
           key={label}
-          className="text-center min-w-[65px] rounded-xl px-4 py-2.5"
+          className="festival-flip text-center min-w-[74px] rounded-xl px-4 py-2.5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl"
           style={{
             background: 'rgba(255,255,255,0.10)',
             border: '1px solid rgba(201,148,58,0.35)',
@@ -42,7 +42,9 @@ export default function CountdownTimer() {
             className="font-yatra text-[1.75rem] leading-none"
             style={{ color: '#E8BC6A' }}
           >
-            {String(value).padStart(2, '0')}
+            <span key={`${label}-${value}`} className="festival-flip-value">
+              {String(value).padStart(2, '0')}
+            </span>
           </div>
           <div
             className="text-[0.65rem] uppercase tracking-widest mt-1"

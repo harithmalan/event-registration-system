@@ -29,7 +29,7 @@ export default function LoginPage() {
         setLoading(false)
         return
       }
-      
+
       router.refresh()
       router.push('/dashboard')
     } catch {
@@ -47,25 +47,38 @@ export default function LoginPage() {
     setGoogleLoading(false)
   }
 
-  const inputClass = "w-full pl-9 pr-4 py-2.5 rounded-xl border-[1.5px] border-[#EEE2C8] bg-[#FAF3E0] text-sm text-[#2B1A0E] placeholder-[#9C7D5A] outline-none focus:border-[#C9943A] focus:shadow-[0_0_0_3px_rgba(201,148,58,0.12)] focus:bg-white transition-all"
+  const inputClass = 'w-full pl-9 pr-4 py-2.5 rounded-xl border-[1.5px] border-[#EEE2C8] bg-[#FAF3E0] text-sm text-[#2B1A0E] placeholder-[#9C7D5A] outline-none focus:border-[#C9943A] focus:shadow-[0_0_0_3px_rgba(201,148,58,0.12)] focus:bg-white transition-all'
 
   return (
-    <div className="min-h-[calc(100vh-70px)] flex items-center justify-center px-4 py-10">
-      <div className="w-full max-w-md">
-        <div className="relative bg-white rounded-2xl p-8 shadow-2xl border border-[#EEE2C8] overflow-hidden">
-          <div className="absolute top-0 left-0 right-0 h-1" style={{ background: 'linear-gradient(90deg, #7A1F28, #C9943A, #7A1F28)' }} />
+    <div className="festival-surface min-h-[calc(100vh-70px)] flex items-center justify-center px-4 py-10">
+      <div className="w-full max-w-md festival-entrance">
+        <div
+          className="relative overflow-hidden rounded-2xl border border-[#EEE2C8] bg-white p-8 shadow-2xl"
+          style={{ backgroundImage: 'radial-gradient(ellipse at 50% 0%, rgba(201,148,58,0.12), transparent 70%)' }}
+        >
+          <div className="absolute left-0 right-0 top-0 h-1" style={{ background: 'linear-gradient(90deg, #7A1F28, #C9943A, #7A1F28)' }} />
+          <div className="absolute left-4 top-4 opacity-50 text-[#C9943A]" aria-hidden="true">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+              <path d="M12 2l1.8 5.2H19l-4.2 3 1.6 5L12 12.8 7.6 15.2l1.6-5L5 7.2h5.2L12 2Z" fill="currentColor" />
+            </svg>
+          </div>
+          <div className="absolute bottom-4 right-4 rotate-180 opacity-40 text-[#C9943A]" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M12 2l1.8 5.2H19l-4.2 3 1.6 5L12 12.8 7.6 15.2l1.6-5L5 7.2h5.2L12 2Z" fill="currentColor" />
+            </svg>
+          </div>
 
-          <div className="flex flex-col items-center mb-7">
-            <Image src="/logo.png" alt="Awurudu 2026" width={72} height={72} className="rounded-full border-2 border-[#E8BC6A] shadow-lg mb-4" style={{ objectFit: 'cover' }} />
+          <div className="mb-7 flex flex-col items-center">
+            <Image src="/logo.png" alt="Awurudu 2026" width={72} height={72} className="festival-float mb-4 rounded-full border-2 border-[#E8BC6A] shadow-lg" style={{ objectFit: 'cover' }} />
             <h1 className="font-yatra text-2xl text-[#7A1F28]">Awurudu 2026</h1>
-            <p className="text-sm text-[#9C7D5A] mt-1">Sign in to your account</p>
+            <p className="mt-1 text-sm text-[#9C7D5A]">Sign in to your account</p>
           </div>
 
           <button
             id="google-signin-btn"
             onClick={handleGoogle}
             disabled={googleLoading}
-            className="w-full flex items-center justify-center gap-3 px-4 py-2.5 rounded-xl border-[1.5px] border-[#EEE2C8] bg-white text-[#2B1A0E] text-sm font-medium hover:bg-[#FAF3E0] hover:border-[#C9943A] transition-all duration-200 disabled:opacity-60 mb-4"
+            className="festival-shimmer mb-4 flex w-full items-center justify-center gap-3 rounded-xl border-[1.5px] border-[#EEE2C8] bg-white px-4 py-2.5 text-sm font-medium text-[#2B1A0E] transition-all duration-200 hover:border-[#C9943A] hover:bg-[#FAF3E0] active:scale-95 disabled:opacity-60"
           >
             {googleLoading ? <LoadingSpinner size={18} color="#7A1F28" /> : (
               <svg width="18" height="18" viewBox="0 0 24 24">
@@ -78,31 +91,31 @@ export default function LoginPage() {
             Continue with Google
           </button>
 
-          <div className="flex items-center gap-3 my-5">
-            <div className="flex-1 h-px bg-[#EEE2C8]" />
+          <div className="my-5 flex items-center gap-3">
+            <div className="h-px flex-1 bg-[#EEE2C8]" />
             <span className="text-xs text-[#9C7D5A]">or sign in with email</span>
-            <div className="flex-1 h-px bg-[#EEE2C8]" />
+            <div className="h-px flex-1 bg-[#EEE2C8]" />
           </div>
 
           <form onSubmit={handleEmailLogin} className="space-y-4">
             <div>
-              <label className="block text-[0.75rem] font-semibold text-[#5C3D2E] mb-1.5 uppercase tracking-wider">Email Address</label>
-              <div className="relative">
+              <label className="mb-1.5 block text-[0.75rem] font-semibold uppercase tracking-wider text-[#5C3D2E]">Email Address</label>
+              <div className="relative rounded-xl border-l-[3px] border-transparent transition-all focus-within:border-[#C9943A]">
                 <Mail size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9C7D5A]" />
                 <input id="login-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@gmail.com" required className={inputClass} />
               </div>
             </div>
             <div>
-              <label className="block text-[0.75rem] font-semibold text-[#5C3D2E] mb-1.5 uppercase tracking-wider">Password</label>
-              <div className="relative">
+              <label className="mb-1.5 block text-[0.75rem] font-semibold uppercase tracking-wider text-[#5C3D2E]">Password</label>
+              <div className="relative rounded-xl border-l-[3px] border-transparent transition-all focus-within:border-[#C9943A]">
                 <Lock size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9C7D5A]" />
-                <input id="login-password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required className={inputClass} />
+                <input id="login-password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter your password" required className={inputClass} />
               </div>
             </div>
 
             {error && (
-              <div className="flex items-start gap-2 px-3 py-2.5 rounded-xl bg-[#8B1A1A]/8 border border-[#8B1A1A]/20">
-                <AlertCircle size={15} className="text-[#8B1A1A] flex-shrink-0 mt-0.5" />
+              <div className="flex items-start gap-2 rounded-xl border border-[#8B1A1A]/20 bg-[#8B1A1A]/8 px-3 py-2.5">
+                <AlertCircle size={15} className="mt-0.5 flex-shrink-0 text-[#8B1A1A]" />
                 <p className="text-xs text-[#8B1A1A]">{error}</p>
               </div>
             )}
@@ -111,7 +124,7 @@ export default function LoginPage() {
               id="login-submit-btn"
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200 disabled:opacity-60"
+              className="flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-semibold transition-all duration-200 active:scale-95 disabled:opacity-60"
               style={{ background: 'linear-gradient(135deg, #7A1F28, #4E1219)', color: '#F5E4B8', boxShadow: '0 2px 12px rgba(122,31,40,0.3)' }}
             >
               {loading && <LoadingSpinner size={16} color="#F5E4B8" />}
@@ -119,9 +132,9 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <p className="text-center mt-5 text-sm text-[#9C7D5A]">
+          <p className="mt-5 text-center text-sm text-[#9C7D5A]">
             Don&apos;t have an account?{' '}
-            <Link href="/register" className="text-[#7A1F28] font-semibold hover:underline">Register</Link>
+            <Link href="/register" className="font-semibold text-[#7A1F28] hover:underline">Register</Link>
           </p>
         </div>
       </div>

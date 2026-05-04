@@ -34,7 +34,7 @@ body {
   background-image:
     radial-gradient(circle at 20% 20%, rgba(201, 148, 58, 0.08) 0%, transparent 50%),
     radial-gradient(circle at 80% 80%, rgba(122, 31, 40, 0.06) 0%, transparent 50%),
-    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C9943A' fill-opacity='0.05'%3E%3Cpath d='M30 0l4 8h8l-6.5 5 2.5 8L30 16l-8 5 2.5-8L18 8h8z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    url("data:image/svg+xml,%3Csvg width='84' height='84' viewBox='0 0 84 84' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cpath d='M42 9l4.5 12.5H59L49 29l3.5 12L42 34l-10.5 7 3.5-12-10-7.5h12.5z' fill='%23C9943A' fill-opacity='0.04'/%3E%3Ccircle cx='42' cy='42' r='8' stroke='%237A1F28' stroke-opacity='0.04' stroke-width='2'/%3E%3Cpath d='M42 58l2.8 7.2H52l-5.6 4.2 2 6.6L42 72l-6.4 4 2-6.6-5.6-4.2h7.2z' fill='%23C9943A' fill-opacity='0.04'/%3E%3C/g%3E%3C/svg%3E");
   color: #2B1A0E;
   min-height: 100vh;
 }
@@ -61,6 +61,243 @@ body {
       var(--gold) 24px,
       var(--gold) 30px
     );
+  }
+
+  .festival-surface {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .festival-surface::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg width='96' height='96' viewBox='0 0 96 96' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cpath d='M48 10l4.8 14.2H67L55.5 33l4 13.8L48 39l-11.5 7.8 4-13.8L29 24.2h14.2z' fill='%23C9943A'/%3E%3Ccircle cx='48' cy='48' r='6' fill='%237A1F28'/%3E%3Cpath d='M18 48h12M66 48h12M48 18v12M48 66v12' stroke='%237A1F28' stroke-width='2' stroke-opacity='0.9'/%3E%3C/g%3E%3C/svg%3E");
+    background-size: 120px;
+    animation: rangoliDrift 26s linear infinite;
+  }
+
+  .festival-entrance {
+    animation: fadeUp 0.7s ease-out both;
+  }
+
+  .festival-entrance-delayed {
+    animation: fadeUp 0.9s ease-out both;
+    animation-delay: 0.12s;
+  }
+
+  .festival-float {
+    animation: float 4.2s ease-in-out infinite;
+  }
+
+  .festival-glow {
+    animation: glowPulse 2.4s ease-in-out infinite;
+  }
+
+  .festival-shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .festival-shimmer::after {
+    content: '';
+    position: absolute;
+    inset: -20% auto -20% -35%;
+    width: 32%;
+    transform: skewX(-18deg);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.28), transparent);
+    animation: shimmerSweep 4.8s ease-in-out infinite;
+  }
+
+  .festival-card-hover {
+    transition: all 0.3s ease;
+  }
+
+  .festival-card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 40px rgba(122, 31, 40, 0.12);
+  }
+
+  .festival-confetti {
+    position: relative;
+    overflow: visible;
+  }
+
+  .festival-confetti::after,
+  .festival-confetti::before {
+    content: '';
+    position: absolute;
+    inset: -16px auto auto 50%;
+    width: 84px;
+    height: 84px;
+    pointer-events: none;
+    background-image:
+      radial-gradient(circle, rgba(201, 148, 58, 0.95) 0 2px, transparent 2.3px),
+      radial-gradient(circle, rgba(122, 31, 40, 0.85) 0 2px, transparent 2.3px),
+      radial-gradient(circle, rgba(45, 122, 58, 0.82) 0 2px, transparent 2.3px);
+    background-size: 22px 22px, 18px 18px, 26px 26px;
+    background-position: 0 0, 10px 8px, 6px 14px;
+    transform: translateX(-50%);
+    opacity: 0;
+    animation: confettiBurst 1.1s ease-out 0.25s both;
+  }
+
+  .festival-confetti::before {
+    animation-delay: 0.38s;
+    transform: translateX(-50%) scale(0.92);
+  }
+
+  .festival-flip {
+    perspective: 600px;
+  }
+
+  .festival-flip-value {
+    display: inline-block;
+    transform-origin: center bottom;
+    animation: flipTick 0.6s ease;
+  }
+
+  .festival-bounce {
+    animation: bounceSoft 1.3s ease-in-out infinite;
+  }
+
+  .festival-pulse {
+    animation: softPulse 1.8s ease-in-out infinite;
+  }
+
+  .festival-shake {
+    animation: shakeX 0.45s ease;
+  }
+
+  .festival-flash-success {
+    animation: successFlash 0.7s ease;
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(201, 148, 58, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(201, 148, 58, 0.12);
+  }
+}
+
+@keyframes shimmerSweep {
+  0% {
+    transform: translateX(-180%) skewX(-18deg);
+  }
+  55%, 100% {
+    transform: translateX(420%) skewX(-18deg);
+  }
+}
+
+@keyframes confettiBurst {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(8px) scale(0.65);
+  }
+  35% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-24px) scale(1.2);
+  }
+}
+
+@keyframes flipTick {
+  0% {
+    transform: rotateX(0deg);
+  }
+  50% {
+    transform: rotateX(-90deg);
+  }
+  100% {
+    transform: rotateX(0deg);
+  }
+}
+
+@keyframes bounceSoft {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes softPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(201, 148, 58, 0.16);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 0 0 10px rgba(201, 148, 58, 0.08);
+  }
+}
+
+@keyframes shakeX {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-4px);
+  }
+  40% {
+    transform: translateX(4px);
+  }
+  60% {
+    transform: translateX(-2px);
+  }
+  80% {
+    transform: translateX(2px);
+  }
+}
+
+@keyframes successFlash {
+  0% {
+    box-shadow: 0 0 0 0 rgba(45, 122, 58, 0.32);
+    background-color: rgba(45, 122, 58, 0.92);
+  }
+  100% {
+    box-shadow: 0 0 0 12px rgba(45, 122, 58, 0);
+    background-color: rgba(45, 122, 58, 1);
+  }
+}
+
+@keyframes rangoliDrift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(8px, -6px, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
   }
 }
 
