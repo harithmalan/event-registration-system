@@ -40,7 +40,9 @@ export async function POST(req: Request) {
   if (updateError) return NextResponse.json({ error: updateError.message }, { status: 500 })
 
   try {
-    const origin = new URL(req.url).origin
+    const protocol = req.headers.get('x-forwarded-proto') || 'https'
+    const host = req.headers.get('x-forwarded-host') || req.headers.get('host')
+    const origin = process.env.NEXT_PUBLIC_BASE_URL || `${protocol}://${host}`
     await fetch(`${origin}/api/send-reject`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
