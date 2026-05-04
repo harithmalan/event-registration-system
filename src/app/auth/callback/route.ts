@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
+import { createServerClient } from '@supabase/ssr'
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url)
@@ -11,37 +11,53 @@ export async function GET(request: Request) {
     return NextResponse.redirect(`${origin}/login`)
   }
 
-  try {
-    const cookieStore = cookies()
-    const supabase = createServerComponentClient({ cookies: () => cookieStore })
+  const cookieStore = cookies()
+  const response = NextResponse.redirect(`${origin}/dashboard`)
 
-    const { data: { session }, error } = await supabase.auth.exchangeCodeForSession(code)
-
-    if (error || !session) {
-      console.error('Auth callback error:', error)
-      return NextResponse.redirect(`${origin}/login`)
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get: (name) => cookieStore.get(name)?.value,
+        set: (name, value, options) => {
+          response.cookies.set({ name, value, ...options })
+        },
+        remove: (name, options) => {
+          response.cookies.set({ name, value: '', ...options })
+        },
+      },
     }
+  )
 
-    // Use admin client to reliably check profile
-    const supabaseAdmin = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    )
+  const { data: { session }, error } = await supabase.auth.exchangeCodeForSession(code)
 
-    const { data: profile } = await supabaseAdmin
-      .from('profiles')
-      .select('student_number')
-      .eq('id', session.user.id)
-      .maybeSingle()
-
-    if (!profile?.student_number || profile.student_number.trim() === '') {
-      return NextResponse.redirect(`${origin}/profile-setup`)
-    }
-
-    return NextResponse.redirect(`${origin}/dashboard`)
-
-  } catch (err) {
-    console.error('Callback exception:', err)
+  if (error || !session) {
+    console.error('Auth error:', error)
     return NextResponse.redirect(`${origin}/login`)
   }
+
+  // Use admin to check profile
+  const admin = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+
+  const { data: profile } = await admin
+    .from('profiles')
+    .select('student_number')
+    .eq('id', session.user.id)
+    .maybeSingle()
+
+  // No student number → go to profile setup
+  if (!profile?.student_number || profile.student_number.trim() === '') {
+    const setupResponse = NextResponse.redirect(`${origin}/profile-setup`)
+    // Copy cookies to the new response so session is preserved
+    response.cookies.getAll().forEach(cookie => {
+      setupResponse.cookies.set(cookie)
+    })
+    return setupResponse
+  }
+
+  return response
 }

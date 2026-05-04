@@ -19,7 +19,7 @@ export async function POST(req: Request) {
 <table width="560" style="background:#fff;border-radius:16px;overflow:hidden;border:1px solid #EEE2C8">
   <tr><td style="background:#4E1219;padding:24px;text-align:center">
     <h1 style="color:#E8BC6A;font-size:22px;margin:0">Suurya Mangalya</h1>
-    <p style="color:#F5E4B8;font-size:12px;margin:4px 0 0">SCUy</p>
+    <p style="color:#F5E4B8;font-size:12px;margin:4px 0 0">SCU</p>
   </td></tr>
   <tr><td style="padding:32px;background:#FAF3E0">
     <p style="color:#2B1A0E">Dear <strong>${studentName}</strong>,</p>

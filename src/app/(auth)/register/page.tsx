@@ -38,8 +38,17 @@ export default function RegisterPage() {
         setLoading(false)
         return
       }
-      
-      // Always go to profile-setup first — student ID required
+
+      // Immediately sign in so the session is established —
+      // without this, the user would be redirected to login again
+      const { error: signInError } = await supabase.auth.signInWithPassword({ email, password })
+      if (signInError) {
+        // signup worked but auto-login failed — send them to login
+        router.push('/login')
+        return
+      }
+
+      // Session established → go to profile setup (student ID required)
       router.push('/profile-setup')
     } catch {
       setError('Something went wrong. Please try again.')

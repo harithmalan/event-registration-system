@@ -78,8 +78,8 @@ export default async function Navbar() {
       {/* Nav Tabs — shown when logged in */}
       {session && (
         <div className="hidden md:flex items-center gap-1">
-          <NavTab href="/dashboard" icon={<LayoutDashboard size={14} />} label="Dashboard" />
-          <NavTab href="/dashboard#event-info" icon={<Info size={14} />} label="Event Info" />
+          {/* <NavTab href="/dashboard" icon={<LayoutDashboard size={14} />} label="Dashboard" />
+          <NavTab href="/dashboard#event-info" icon={<Info size={14} />} label="Event Info" /> */}
           {!isAdmin && (
             <NavTab href="/dashboard#my-ticket" icon={<Ticket size={14} />} label="My Ticket" />
           )}
