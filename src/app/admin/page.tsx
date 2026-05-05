@@ -23,6 +23,16 @@ interface RegistrationRow {
   } | null
 }
 
+interface AdminProfileRow {
+  id: string
+  full_name: string | null
+  student_number: string | null
+  email: string | null
+  avatar_initial: string | null
+  avatar_url: string | null
+  is_admin: boolean | null
+}
+
 interface KumaraAdminRow {
   id: string
   user_id: string
@@ -107,7 +117,7 @@ export default async function AdminPage() {
       .order('uploaded_at', { ascending: false }),
     supabaseAdmin
       .from('profiles')
-      .select('id, full_name, student_number, email, avatar_initial'),
+      .select('id, full_name, student_number, email, avatar_initial, avatar_url, is_admin'),
     supabaseAdmin
       .from('game_kumara_kumariya')
       .select('*')
@@ -186,6 +196,7 @@ export default async function AdminPage() {
   return (
     <AdminClient
       initialData={rows}
+      initialProfiles={(profiles ?? []) as AdminProfileRow[]}
       stats={stats}
       initialKumaraRows={(kumaraRows ?? []) as KumaraAdminRow[]}
       initialTugGroups={tugGroups}

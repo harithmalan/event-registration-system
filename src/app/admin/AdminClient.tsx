@@ -38,6 +38,22 @@ interface RegistrationRow {
   profiles: { full_name: string; student_number: string; email: string; avatar_initial: string | null } | null
 }
 
+interface AdminProfileRow {
+  id: string
+  full_name: string | null
+  student_number: string | null
+  email: string | null
+  avatar_initial: string | null
+  avatar_url: string | null
+  is_admin: boolean | null
+}
+
+interface AdminProfileViewRow extends AdminProfileRow {
+  registrationStatus: ReceiptStatus
+  qrState: 'not_sent' | 'sent' | 'used'
+  uploaded_at: string | null
+}
+
 interface Stats {
   total: number
   pending: number
@@ -92,6 +108,9 @@ interface TugGroupRow {
   members: TugMemberRow[]
 }
 
+type AdminSection = 'registrations' | 'profiles' | 'games'
+type ProfileRoleFilter = 'all' | 'admins' | 'students'
+
 function AnimatedCount({ value }: { value: number }) {
   const [displayValue, setDisplayValue] = useState(0)
 
@@ -120,13 +139,20 @@ function ErrorBanner({ message }: { message: string }) {
   return <p className="rounded-xl border border-[#8B1A1A]/20 bg-[#8B1A1A]/8 px-3 py-2 text-xs text-[#8B1A1A]">{message}</p>
 }
 
+function SuccessBanner({ message }: { message: string }) {
+  if (!message) return null
+  return <p className="rounded-xl border border-[#2D7A3A]/20 bg-[#2D7A3A]/8 px-3 py-2 text-xs text-[#2D7A3A]">{message}</p>
+}
+
 export default function AdminClient({
   initialData,
+  initialProfiles,
   stats,
   initialKumaraRows,
   initialTugGroups,
 }: {
   initialData: RegistrationRow[]
+  initialProfiles: AdminProfileRow[]
   stats: Stats
   initialKumaraRows: KumaraAdminRow[]
   initialTugGroups: TugGroupRow[]
@@ -143,8 +169,12 @@ export default function AdminClient({
   const [rejectReason, setRejectReason] = useState('')
   const [receiptModal, setReceiptModal] = useState<string | null>(null)
   const [gamePhotoModal, setGamePhotoModal] = useState<{ url: string; name: string } | null>(null)
-  const [activeSection, setActiveSection] = useState<'registrations' | 'games'>('registrations')
+  const [activeSection, setActiveSection] = useState<AdminSection>('registrations')
   const [rejectAnimating, setRejectAnimating] = useState(false)
+  const [reminderSending, setReminderSending] = useState(false)
+  const [reminderMessage, setReminderMessage] = useState('')
+  const [profileSearch, setProfileSearch] = useState('')
+  const [profileRoleFilter, setProfileRoleFilter] = useState<ProfileRoleFilter>('all')
 
   const [kumaraRows, setKumaraRows] = useState<KumaraAdminRow[]>(initialKumaraRows)
   const [tugGroups, setTugGroups] = useState<TugGroupRow[]>(initialTugGroups)
@@ -169,6 +199,64 @@ export default function AdminClient({
       return true
     })
   }, [filterQR, filterStatus, rows, search])
+
+  const registrationByUserId = useMemo(() => {
+    const registrations = new Map<string, RegistrationRow>()
+
+    rows.forEach((row) => {
+      if (!registrations.has(row.user_id)) registrations.set(row.user_id, row)
+    })
+
+    return registrations
+  }, [rows])
+
+  const allProfiles = useMemo<AdminProfileViewRow[]>(() => {
+    return initialProfiles
+      .map((profile) => {
+        const registration = registrationByUserId.get(profile.id)
+
+        return {
+          ...profile,
+          registrationStatus: (registration?.receipt_status as ReceiptStatus) ?? 'not_submitted',
+          qrState: registration?.qr_used ? 'used' : registration?.qr_token ? 'sent' : 'not_sent',
+          uploaded_at: registration?.uploaded_at ?? null,
+        }
+      })
+      .sort((a, b) => {
+        const adminDiff = Number(b.is_admin === true) - Number(a.is_admin === true)
+        if (adminDiff !== 0) return adminDiff
+
+        const aLabel = a.full_name?.trim() || a.email?.trim() || a.id
+        const bLabel = b.full_name?.trim() || b.email?.trim() || b.id
+        return aLabel.localeCompare(bLabel)
+      })
+  }, [initialProfiles, registrationByUserId])
+
+  const filteredProfiles = useMemo(() => {
+    return allProfiles.filter((profile) => {
+      if (profileRoleFilter === 'admins' && !profile.is_admin) return false
+      if (profileRoleFilter === 'students' && profile.is_admin) return false
+
+      if (profileSearch) {
+        const query = profileSearch.toLowerCase()
+        const name = profile.full_name?.toLowerCase() ?? ''
+        const studentNumber = profile.student_number?.toLowerCase() ?? ''
+        const email = profile.email?.toLowerCase() ?? ''
+        if (!name.includes(query) && !studentNumber.includes(query) && !email.includes(query)) return false
+      }
+
+      return true
+    })
+  }, [allProfiles, profileRoleFilter, profileSearch])
+
+  const profileStats = useMemo(() => {
+    return {
+      total: allProfiles.length,
+      admins: allProfiles.filter((profile) => profile.is_admin).length,
+      completed: allProfiles.filter((profile) => profile.student_number?.trim()).length,
+      approved: allProfiles.filter((profile) => profile.registrationStatus === 'approved').length,
+    }
+  }, [allProfiles])
 
   const parseStoragePath = useCallback((value: string | null) => {
     if (!value) return null
@@ -439,11 +527,40 @@ export default function AdminClient({
     }
   }
 
+  async function handleSendPaymentReminders() {
+    setReminderSending(true)
+    setReminderMessage('')
+    setGamesError('')
+
+    try {
+      const response = await fetch('/api/send-payment-reminders', {
+        method: 'POST',
+      })
+
+      const payload = await response.json().catch(() => null)
+      if (!response.ok) {
+        throw new Error(payload?.error || 'Could not send payment reminders.')
+      }
+
+      setReminderMessage(`Reminder emails sent to ${payload?.sent ?? 0} student(s).`)
+    } catch (error) {
+      setGamesError(error instanceof Error ? error.message : 'Could not send payment reminders.')
+    } finally {
+      setReminderSending(false)
+    }
+  }
+
   const tabs: Array<{ key: 'all' | ReceiptStatus; label: string; count?: number }> = [
     { key: 'all', label: 'All', count: stats.total },
     { key: 'pending', label: 'Pending', count: stats.pending },
     { key: 'approved', label: 'Approved', count: stats.approved },
     { key: 'rejected', label: 'Rejected', count: stats.rejected },
+  ]
+
+  const profileTabs: Array<{ key: ProfileRoleFilter; label: string; count: number }> = [
+    { key: 'all', label: 'All Profiles', count: profileStats.total },
+    { key: 'students', label: 'Students', count: profileStats.total - profileStats.admins },
+    { key: 'admins', label: 'Admins', count: profileStats.admins },
   ]
 
   const qrBadge = (row: RegistrationRow) => {
@@ -475,11 +592,12 @@ export default function AdminClient({
       <div className="mb-5 flex flex-wrap gap-2">
         {[
           { key: 'registrations', label: 'Registrations' },
+          { key: 'profiles', label: 'User Profiles' },
           { key: 'games', label: 'Games' },
         ].map((section) => (
           <button
             key={section.key}
-            onClick={() => setActiveSection(section.key as 'registrations' | 'games')}
+            onClick={() => setActiveSection(section.key as AdminSection)}
             className={`rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 active:scale-95 ${
               activeSection === section.key
                 ? 'bg-[#7A1F28] text-[#F5E4B8] shadow-lg'
@@ -493,6 +611,25 @@ export default function AdminClient({
 
       {activeSection === 'registrations' && (
         <>
+          <div className="mb-4 flex flex-col gap-3 rounded-2xl border border-[rgba(201,148,58,0.1)] bg-white p-4 shadow-[0_4px_24px_rgba(122,31,40,0.08)] sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-sm font-semibold text-[#7A1F28]">Payment Reminder Emails</p>
+              <p className="text-xs text-[#9C7D5A]">Notify students who still need to buy tickets or upload a valid receipt before the closing window.</p>
+            </div>
+            <button
+              onClick={handleSendPaymentReminders}
+              disabled={reminderSending}
+              className="inline-flex items-center gap-2 rounded-xl bg-[#7A1F28] px-4 py-2.5 text-sm font-semibold text-[#F5E4B8] transition-all duration-200 hover:shadow-xl hover:-translate-y-0.5 active:scale-95 disabled:opacity-60"
+            >
+              {reminderSending ? <LoadingSpinner size={14} color="#F5E4B8" /> : <Send size={14} />}
+              {reminderSending ? 'Sending...' : 'Send Payment Reminders'}
+            </button>
+          </div>
+          <div className="mb-4 space-y-2">
+            <SuccessBanner message={reminderMessage} />
+            <ErrorBanner message={gamesError} />
+          </div>
+
           <div className="mb-5 grid grid-cols-2 gap-3 md:grid-cols-4">
             {[
               { icon: <Users size={18} />, label: 'Total', value: stats.total, accent: '#C9943A' },
@@ -644,6 +781,114 @@ export default function AdminClient({
             </div>
           </div>
         </>
+      )}
+
+      {activeSection === 'profiles' && (
+        <div className="space-y-5">
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+            {[
+              { icon: <Users size={18} />, label: 'Total Profiles', value: profileStats.total, accent: '#C9943A' },
+              { icon: <CheckCircle2 size={18} />, label: 'Profile Ready', value: profileStats.completed, accent: '#2A5F99' },
+              { icon: <CheckCircle2 size={18} />, label: 'Approved Tickets', value: profileStats.approved, accent: '#2D7A3A' },
+              { icon: <Users size={18} />, label: 'Admins', value: profileStats.admins, accent: '#7A1F28' },
+            ].map(({ icon, label, value, accent }) => (
+              <div key={label} className="festival-card-hover rounded-2xl border border-[rgba(201,148,58,0.1)] bg-white p-4 shadow-[0_4px_24px_rgba(122,31,40,0.08)]" style={{ borderTop: `3px solid ${accent}` }}>
+                <div className="mb-1 flex items-center gap-2" style={{ color: accent }}>
+                  {icon}
+                  <span className="text-[0.72rem] uppercase tracking-wider text-[#9C7D5A]">{label}</span>
+                </div>
+                <div className="font-yatra text-3xl text-[#7A1F28]"><AnimatedCount value={value} /></div>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-[rgba(201,148,58,0.1)] bg-white px-4 py-3 shadow-[0_4px_24px_rgba(122,31,40,0.08)]">
+            <div className="flex flex-wrap gap-1">
+              {profileTabs.map((tab) => (
+                <button
+                  key={tab.key}
+                  onClick={() => setProfileRoleFilter(tab.key)}
+                  className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-all duration-200 active:scale-95 ${profileRoleFilter === tab.key ? 'text-[#F5E4B8]' : 'text-[#5C3D2E] hover:bg-[#FAF3E0]'}`}
+                  style={profileRoleFilter === tab.key ? { background: 'linear-gradient(135deg, #7A1F28, #4E1219)' } : {}}
+                >
+                  {tab.label} <span className="ml-1 opacity-70">({tab.count})</span>
+                </button>
+              ))}
+            </div>
+            <div className="relative min-w-[240px] flex-1">
+              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9C7D5A]" />
+              <input
+                id="admin-profiles-search"
+                type="text"
+                placeholder="Search all profiles by name, student no, or email..."
+                value={profileSearch}
+                onChange={(e) => setProfileSearch(e.target.value)}
+                className="w-full rounded-lg border border-[#EEE2C8] bg-[#FAF3E0] py-1.5 pl-8 pr-3 text-sm text-[#2B1A0E] outline-none transition-all duration-200 focus:border-[#C9943A]"
+              />
+            </div>
+          </div>
+
+          <div className="overflow-hidden rounded-2xl border border-[rgba(201,148,58,0.1)] bg-white shadow-[0_4px_24px_rgba(122,31,40,0.08)]">
+            <div className="border-b border-[#EEE2C8] bg-[#FFF8EC] px-4 py-3">
+              <p className="text-sm font-semibold text-[#7A1F28]">All User Profiles</p>
+              <p className="text-xs text-[#9C7D5A]">Includes admin accounts, students, and each profile&apos;s current payment state.</p>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[900px] border-collapse">
+                <thead style={{ background: 'linear-gradient(135deg, #4E1219, #7A1F28)' }}>
+                  <tr>
+                    {['User', 'Email', 'Role', 'Student No', 'Payment', 'QR', 'Uploaded'].map((heading) => (
+                      <th key={heading} className="px-4 py-3 text-left text-[0.7rem] font-bold uppercase tracking-wider text-[#F5E4B8]">{heading}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredProfiles.length === 0 ? (
+                    <tr><td colSpan={7} className="py-10 text-center text-sm text-[#9C7D5A]">No user profiles matched this search.</td></tr>
+                  ) : filteredProfiles.map((profile, index) => (
+                    <tr
+                      key={profile.id}
+                      className="festival-entrance border-b border-[#EEE2C8] transition-colors hover:bg-[rgba(201,148,58,0.03)]"
+                      style={{ animationDelay: `${index * 35}ms` }}
+                    >
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-3">
+                          <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border-2 border-[#E8BC6A] text-sm font-bold" style={{ background: 'linear-gradient(135deg, #7A1F28, #4E1219)', color: '#E8BC6A' }}>
+                            {profile.avatar_initial ?? profile.full_name?.charAt(0)?.toUpperCase() ?? profile.email?.charAt(0)?.toUpperCase() ?? 'U'}
+                          </div>
+                          <div>
+                            <p className="text-sm font-semibold text-[#2B1A0E]">{profile.full_name || 'Unnamed user'}</p>
+                            <p className="text-xs text-[#9C7D5A]">{profile.is_admin ? 'Administrator account' : 'Student account'}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 text-sm text-[#5C3D2E]">{profile.email || '-'}</td>
+                      <td className="px-4 py-3">
+                        <span className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[0.68rem] font-semibold ${profile.is_admin ? 'border-[#7A1F28]/20 bg-[#7A1F28]/10 text-[#7A1F28]' : 'border-[#2A5F99]/20 bg-[#2A5F99]/10 text-[#2A5F99]'}`}>
+                          {profile.is_admin ? 'Admin' : 'Student'}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-sm text-[#5C3D2E]">{profile.student_number || '-'}</td>
+                      <td className="px-4 py-3">
+                        <StatusBadge status={profile.registrationStatus} />
+                      </td>
+                      <td className="px-4 py-3">
+                        {profile.qrState === 'used' ? (
+                          <span className="inline-flex items-center gap-1 rounded-full border border-[#2D7A3A]/25 bg-[#2D7A3A]/10 px-2 py-0.5 text-[0.68rem] font-semibold text-[#2D7A3A]">Used</span>
+                        ) : profile.qrState === 'sent' ? (
+                          <span className="inline-flex items-center gap-1 rounded-full border border-[#3A7ABD]/25 bg-[#3A7ABD]/10 px-2 py-0.5 text-[0.68rem] font-semibold text-[#2A5F99]">Sent</span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 rounded-full border border-[#9C7D5A]/20 bg-[#9C7D5A]/10 px-2 py-0.5 text-[0.68rem] font-semibold text-[#9C7D5A]">Not Sent</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 text-xs text-[#9C7D5A]">{profile.uploaded_at ? formatDate(profile.uploaded_at) : '-'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       )}
 
       {activeSection === 'games' && (
