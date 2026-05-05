@@ -214,11 +214,16 @@ export default function AdminClient({
     return initialProfiles
       .map((profile) => {
         const registration = registrationByUserId.get(profile.id)
+        const qrState: AdminProfileViewRow['qrState'] = registration?.qr_used
+          ? 'used'
+          : registration?.qr_token
+            ? 'sent'
+            : 'not_sent'
 
         return {
           ...profile,
           registrationStatus: (registration?.receipt_status as ReceiptStatus) ?? 'not_submitted',
-          qrState: registration?.qr_used ? 'used' : registration?.qr_token ? 'sent' : 'not_sent',
+          qrState,
           uploaded_at: registration?.uploaded_at ?? null,
         }
       })
