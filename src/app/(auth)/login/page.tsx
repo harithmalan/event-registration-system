@@ -56,6 +56,7 @@ export default function LoginPage() {
         provider: 'facebook',
         options: {
           redirectTo: `${window.location.origin}/auth/callback`,
+          scopes: 'email',
         },
       })
       if (oauthError) {
