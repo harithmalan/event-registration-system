@@ -574,6 +574,28 @@ export default function AdminClient({
     return <span className="inline-flex items-center gap-1 rounded-full border border-[#9C7D5A]/20 bg-[#9C7D5A]/10 px-2 py-0.5 text-[0.68rem] font-semibold text-[#9C7D5A]">Not Sent</span>
   }
 
+  const exportRegistrationsToCSV = (data: RegistrationRow[]) => {
+    const headers = ['Student Name', 'Student Number', 'Email', 'Uploaded At', 'Receipt Status', 'QR Status', 'Email Sent', 'Rejection Reason']
+    const rowsToExport = data.map((row) => [
+      row.profiles?.full_name ?? '',
+      row.profiles?.student_number ?? '',
+      row.profiles?.email ?? '',
+      row.uploaded_at ? formatDate(row.uploaded_at) : '',
+      row.receipt_status,
+      row.qr_used ? 'Used' : row.qr_token ? 'Sent' : 'Not Sent',
+      row.email_sent ? 'Yes' : 'No',
+      row.rejection_reason ?? '',
+    ])
+    const csv = [headers, ...rowsToExport].map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\n')
+    const blob = new Blob([csv], { type: 'text/csv' })
+    const url = URL.createObjectURL(blob)
+    const anchor = document.createElement('a')
+    anchor.href = url
+    anchor.download = 'admin-registrations.csv'
+    anchor.click()
+    URL.revokeObjectURL(url)
+  }
+
   const exportToCSV = (data: KumaraAdminRow[]) => {
     const headers = ['Name', 'Age', 'Gender', 'Batch', 'Skill', 'Registered At']
     const rowsToExport = data.map((row) => [row.full_name, row.age, row.gender, row.batch, row.skill ?? '', row.registered_at])
@@ -685,6 +707,14 @@ export default function AdminClient({
               <option value="sent">QR Sent</option>
               <option value="used">QR Used</option>
             </select>
+            <button
+              onClick={() => exportRegistrationsToCSV(filtered)}
+              disabled={filtered.length === 0}
+              className="inline-flex items-center gap-2 rounded-lg bg-[#7A1F28] px-3 py-1.5 text-sm font-semibold text-[#F5E4B8] transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 active:scale-95 disabled:opacity-60"
+            >
+              <Download size={14} />
+              Export CSV
+            </button>
           </div>
 
           <div className="overflow-hidden rounded-2xl border border-[rgba(201,148,58,0.1)] bg-white shadow-[0_4px_24px_rgba(122,31,40,0.08)]">
